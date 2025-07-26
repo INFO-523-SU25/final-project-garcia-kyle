@@ -1,11 +1,11 @@
 ---
-title: "Proposal title"
+title: "Packet Traffic Learning"
 subtitle: "Proposal"
 author: 
-  - name: "Team Name - Team member 1, Team member 2,..."
+  - name: "The Anomalists - Joey Garcia, David Kyle"
     affiliations:
       - name: "College of Information Science, University of Arizona"
-description: "Project description"
+description: "Project description: Our project aims to develop a predictive model to detect anomalous network behavior using packet-level and statistical features derived from network traffic. With machine learning models, we aim to accurately classify and predict network anomalies, which is essential for intrusion detection, network security monitoring, and incident response automation."
 format:
   html:
     code-tools: true
@@ -23,6 +23,8 @@ jupyter: python3
 #| label: load-pkgs
 #| message: false
 import numpy as np
+import pandas as pd
+from scipy import stats # for analysis plan
 ```
 
 ## Dataset
@@ -30,15 +32,32 @@ import numpy as np
 ```{python}
 #| label: load-dataset
 #| message: false
+
+network_traffic = pd.read_csv('data/embedded_system_network_security_dataset.csv')
+
+network_traffic.head()
 ```
 
 A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
+
+We use the Embedded System Network Security Dataset from Kaggle, which contains labeled network traffic with features like packet size, inter-arrival time, and TCP/UDP flags. We utilize features representing protocol types (i.e., `protocol_type_TCP`, `protocol_type_UDP`), specific IP addresses (i.e., `src_ip_192.168.1.2`), and Transmission Control Protocol (TCP) flags (`tcp_flags_FIN`, `tcp_flags_SYN`, `tcp_flags_SYN-ACK`). The label field indicates normal or anomalous observations which allows us to use supervised learning approaches. 
+
+We chose this dataset because it provides a rich and realistic representation of network traffic data. The presence of labeled data allows us to train and evaluate supervised models; the diversity and volume of traffic patterns make it well-suited for exploring unsupervised anomaly detection techniques as well. This balance between complexity and feature richness aligns well with our research questions and modeling goals.
+
+```{python}
+#| label: preview-data-columns
+cols = network_traffic.columns
+for col in cols:
+  print(col)
+```
 
 Make sure to load the data and use inline code for some of this information.
 
 ## Questions
 
-The two questions you want to answer.
+Q1. Using supervised machine learning models such as Long Short-Term Memory (LSTM) and Support Vector Machines (SVMs), can we accurately calssify network traffic as normal and anomalous based on labeled data? How do their performances compare in terms of accuracy, precision, recall, and F1-score?
+
+Q2. Can unsupervised learning methods such as K-Means Clustering and Density-Based Clustering (DBSCAN) detect anomalous patterns in network traffic without using labeled data? Regarding anomaly detection effectiveness, how do unsupervised compare to supervised approaches (LSTM and SVM) using external ground-truth labels for evaluation?
 
 ## Analysis plan
 
