@@ -24,6 +24,8 @@ jupyter: python3
 #| message: false
 import numpy as np
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 from scipy import stats # for analysis plan
 ```
 
@@ -35,12 +37,10 @@ from scipy import stats # for analysis plan
 
 network_traffic = pd.read_csv('data/embedded_system_network_security_dataset.csv')
 
-network_traffic.head()
+network_traffic.shape
 ```
 
-A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
-
-We use the Embedded System Network Security Dataset from Kaggle, which contains labeled network traffic with features like packet size, inter-arrival time, and TCP/UDP flags. We utilize features representing protocol types (i.e., `protocol_type_TCP`, `protocol_type_UDP`), specific IP addresses (i.e., `src_ip_192.168.1.2`), and Transmission Control Protocol (TCP) flags (`tcp_flags_FIN`, `tcp_flags_SYN`, `tcp_flags_SYN-ACK`). The label field indicates normal or anomalous observations which allows us to use supervised learning approaches. 
+We use the [Embedded System Network Security Dataset from Kaggle](https://www.kaggle.com/datasets/embedded/system-network-security-dataset), which contains **1,000 rows** and **18 columns** of labeled network traffic with features like packet size, inter-arrival time, and TCP/UDP flags. We utilize features representing protocol types (i.e., `protocol_type_TCP`, `protocol_type_UDP`), specific IP addresses (i.e., `src_ip_192.168.1.2`), and Transmission Control Protocol (TCP) flags (`tcp_flags_FIN`, `tcp_flags_SYN`, `tcp_flags_SYN-ACK`). The `label` field indicates normal or anomalous observations which allows us to use supervised learning approaches.
 
 We chose this dataset because it provides a rich and realistic representation of network traffic data. The presence of labeled data allows us to train and evaluate supervised models; the diversity and volume of traffic patterns make it well-suited for exploring unsupervised anomaly detection techniques as well. This balance between complexity and feature richness aligns well with our research questions and modeling goals.
 
@@ -51,14 +51,97 @@ for col in cols:
   print(col)
 ```
 
-Make sure to load the data and use inline code for some of this information.
 
 ## Questions
 
 Q1. Using supervised machine learning models such as Long Short-Term Memory (LSTM) and Support Vector Machines (SVMs), can we accurately calssify network traffic as normal and anomalous based on labeled data? How do their performances compare in terms of accuracy, precision, recall, and F1-score?
 
-Q2. Can unsupervised learning methods such as K-Means Clustering and Density-Based Clustering (DBSCAN) detect anomalous patterns in network traffic without using labeled data? Regarding anomaly detection effectiveness, how do unsupervised compare to supervised approaches (LSTM and SVM) using external ground-truth labels for evaluation?
+Q2. Can unsupervised learning methods such as K-Means Clustering and Density-Based Clustering (DBSCAN) detect anomalous patterns in network traffic without using labeled data?
+
+Summary. How do the supervised and unsupervised approaches compare?
 
 ## Analysis plan
 
--   A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
+## Analysis plan
+
+### Variables
+
+| Column Name             | Data Type | Description                                                 |
+| ----------------------- | --------- | ----------------------------------------------------------- |
+| `packet_size`           | float64   | Size of the network packet in bytes.                        |
+| `inter_arrival_time`    | float64   | Time difference between consecutive packets.                |
+| `src_port`              | int64     | Source port number of the network flow.                     |
+| `dst_port`              | int64     | Destination port number of the network flow.                |
+| `packet_count_5s`       | float64   | Number of packets transmitted in a 5-second window.         |
+| `mean_packet_size`      | float64   | Average packet size over a time window or session.          |
+| `spectral_entropy`      | float64   | Frequency-domain feature extracted using Wavelet Transform. |
+| `frequency_band_energy` | float64   | Energy within different frequency bands (Wavelet-derived).  |
+| `label`                 | float64   | 0 for normal traffic, 1 for anomalous (malicious) traffic.  |
+| `protocol_type_TCP`     | bool      | Indicator for TCP protocol.                                 |
+| `protocol_type_UDP`     | bool      | Indicator for UDP protocol.                                 |
+| `src_ip_192.168.1.2`    | bool      | Indicator for source IP = 192.168.1.2.                      |
+| `src_ip_192.168.1.3`    | bool      | Indicator for source IP = 192.168.1.3.                      |
+| `dst_ip_192.168.1.5`    | bool      | Indicator for destination IP = 192.168.1.5.                 |
+| `dst_ip_192.168.1.6`    | bool      | Indicator for destination IP = 192.168.1.6.                 |
+| `tcp_flags_FIN`         | bool      | TCP FIN flag set.                                           |
+| `tcp_flags_SYN`         | bool      | TCP SYN flag set.                                           |
+| `tcp_flags_SYN-ACK`     | bool      | TCP SYN-ACK flag set.                                       |
+
+## Exploratory Data Analysis
+
+We take a quick look at the data to see if the data is telling anything right away.
+
+
+
+```{python}
+print("Info:\n", network_traffic.info())
+print("\nDescribe the numerics:\n",network_traffic.describe())
+print("\nDuplicates:",network_traffic.duplicated().sum())
+```
+
+We see that `mean_packet_size` is entirely zeroes, so that column will be removed.
+
+## Normal vs Anomalous Traffic
+
+First, look at the amount of normal v. anomalous data.
+
+```{python}
+#| label: class-distribution
+#| echo: false
+#| message: false
+#| warning: false
+
+# plot style
+sns.set(style="whitegrid")
+
+# plot
+plt.figure(figsize=(6, 4))
+sns.countplot(data=network_traffic, x="label", palette="Set2")
+
+plt.title("Distribution of Normal vs Anomalous Traffic")
+plt.xlabel("Label (0 = Normal, 1 = Anomalous)")
+plt.ylabel("Count")
+
+plt.tight_layout()
+plt.show()
+
+print(network_traffic['label'].value_counts())
+
+```
+
+The plot suggests class imbalance with the majority of traffic normal. If we don't deal with imbalance, there will be significant issues. For example, if the imbalance is left as-is, we could just say that every traffic sample is normal and be right approximately 90% of the time. 
+
+## Timeline
+
+### Project Timeline
+
+| Task Name                         | Status      | Due    | Priority | Summary                                                                 |
+| --------------------------------- | ----------- | ------ | -------- | ----------------------------------------------------------------------- |
+| Dataset exploration               | In Progress | Week 1 | High     | Load the dataset, inspect features, handle any preprocessing needs.     |
+| Define research questions         | Complete    | Week 1 | High     | Clarify goals for supervised and unsupervised anomaly detection.        |
+| Supervised model development      | Not Started | Week 2 | High     | Train models like Random Forest, Logistic Regression, and XGBoost.      |
+| Evaluation of supervised models   | Not Started | Week 3 | High     | Use accuracy, precision, recall, F₁, and ROC-AUC to assess performance. |
+| Unsupervised model development    | Not Started | Week 3 | Medium   | Explore methods like Isolation Forest and clustering.                   |
+| Evaluation of unsupervised models | Not Started | Week 4 | Medium   | Compare anomaly scores to labeled data using precision-recall metrics.  |
+| Comparative analysis              | Not Started | Week 4 | High     | Analyze strengths and weaknesses of both approaches.                    |
+| Final report & presentation       | Not Started | Week 5 | High     | Compile results, figures, and discussion into final deliverables.       |
