@@ -35,11 +35,11 @@ from scipy import stats # for analysis plan
 #| label: load-dataset
 #| message: false
 
-network_traffic_test = pd.read_csv('data/KDDTest+.txt')
 network_traffic_train = pd.read_csv('data/KDDTrain+.txt')
+network_traffic_test = pd.read_csv('data/KDDTest+.txt')
 
-df_train = network_traffic_test.copy()
-df_test = network_traffic_train.copy()
+df_train = network_traffic_train.copy()
+df_test = network_traffic_test.copy()
 
 '''
 Columns recieved from kaggle project 
@@ -63,23 +63,18 @@ columns = [
 ]
 
 # Assign the column names to the dataframe
-df_test.columns = columns
 df_train.columns = columns
+df_test.columns = columns
 
-print('Shapes (test, train):', df_test.shape, df_train.shape)
+
+print('Shapes (train, test):', df_train.shape, df_test.shape)
 ```
 
-We are using testing and training network intrusion detection datasets from [NSL-KDD from Kaggle](https://www.kaggle.com/datasets/hassan06/nslkdd/data?select=KDDTrain1.jpg), which contains **12,5972 rows** and **43 columns** of labeled intrusion detection network traffic in the test dataset. The `attack` field indicates normal or anomalous (multi-class) observations which allows us to use supervised learning approaches for classifying anomalous network activity.
+We are using training and testing network intrusion detection datasets from [NSL-KDD from Kaggle](https://www.kaggle.com/datasets/hassan06/nslkdd/data?select=KDDTrain1.jpg). The training dataset contains **125,972 rows** and **43 columns** of intrusion detection network traffic and **22,543 rows** and **43 columns** in the test dataset. 
+
+The `attack` field indicates normal or anomalous (multi-class) observations which allows us to use learning approaches for classifying anomalous network activity. A new binary classification field, `is_anomalous` will be added indicating if the newtork connection was anomalous or not. This will be the target field of the project.
 
 We chose this dataset because it provides a rich and realistic representation of network traffic data. The presence of labeled data allows us to train and evaluate supervised models; the diversity and volume of traffic patterns make it well-suited for exploring unsupervised anomaly detection techniques as well. This balance between complexity and feature richness aligns well with our research questions and modeling goals.
-
-```{python}
-#| label: preview-data-columns
-cols_test = df_test.columns
-
-for col in cols_test:
-  print(col)
-```
 
 ## Questions
 
@@ -89,7 +84,7 @@ Q2. Can unsupervised learning methods such as K-Means Clustering and Density-Bas
 
 Summary. How do the supervised and unsupervised approaches compare?
 
-## Analysis plan
+## Dataset Analysis
 
 ### Variables
 
@@ -142,15 +137,22 @@ Summary. How do the supervised and unsupervised approaches compare?
 
 ### Exploratory Data Analysis
 
-We take a quick look at the data to see if the data is telling anything right away.
+We take a quick look at the training data to see if the data is telling anything right away.
 
 ```{python}
 #| label: Exploratory Data Analysis
-print("Info:\n", df_train.info())
-print("\nDescribe the numerics:\n",df_train.describe())
-print("\nDuplicates:",df_train.duplicated().sum())
+print("Shape:", df_train.shape)
+print("Missing values:", df_train.isna().sum().sum())
+print("Duplicates:", df_train.duplicated().sum())
+print("Unique attack labels:", df_train['attack'].nunique())
+print("Attack label distribution:\n", df_train['attack'].value_counts().head(5))
+
+# Show types and non-null counts
+df_train.info(verbose=False)
 ```
 
+
+The brief look at the data is positive. There are plenty of data points and features to work with, in fact we may end up taking a sample because hyper parameter trining may be time intensive. In the data there are no missing values, and the glimpse of the `attack` column provides insight into why we want to collapse it into a binary column.
 
 ## Normal vs Anomalous Traffic
 
@@ -165,17 +167,20 @@ First, look at the amount of normal v. anomalous data.
 # plot style
 sns.set(style="whitegrid")
 
+# Gtop 10 attack types
+top_10_attacks = df_train['attack'].value_counts().head(10).index
+
 # plot
 plt.figure(figsize=(10, 4))
 sns.countplot(
-  data=df_test, 
-  x="attack",
-  hue="attack", 
-  palette="Set2",
-  order=df_test['attack'].value_counts().index
-  )
+    data=df_train[df_train['attack'].isin(top_10_attacks)],
+    x="attack",
+    hue="attack",
+    palette="Set2",
+    order=top_10_attacks
+)
 
-plt.title("Distribution of Normal vs Anomalous Traffic")
+plt.title("Top 10 Attack Types in Training Data")
 plt.xlabel("Attack Type")
 plt.ylabel("Count")
 plt.xticks(rotation=45)
@@ -183,13 +188,88 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
 
-print(df_test['attack'].value_counts())
+# Print the full frequency table
+print(df_train['attack'].value_counts())
 
 ```
 
-The plot suggests 
+The plot provides an idea of the specific attack types expressesd in the data. The plot communicates why it makes sense to group all non-normal traffic together. 
 
-## Timeline
+A new column, `is_anomalous` is created containing 0 if the connection is normal and 1 if the connection is not normal.
+
+```{python}
+
+# create binary target column: 1 = attack, 0 = normal
+
+df_train['is_anomalous'] = df_train['attack'].apply(
+  lambda x: 0 if x == 'normal' else 1)
+
+df_test['is_anomalous'] = df_test['attack'].apply(
+  lambda x: 0 if x == 'normal' else 1)
+```
+
+Examine the new columns to get an idea of the target balance.
+
+```{python}
+#| label: countplot-anomalous
+#| echo: false
+#| message: false
+#| warning: false
+
+plt.figure(figsize = (10, 6))
+
+ax = sns.countplot(x = 'is_anomalous', data = df_train, palette = "Set2", hue = "is_anomalous")
+plt.xticks([0, 1], ['Normal (0)', 'Anomalous (1)'])
+plt.xlabel('Network Traffic Type')
+plt.ylabel('Count')
+plt.title('Normal vs Anomalous Network Traffic in Training Data')
+
+ax.legend_.remove()
+ax.grid(False, axis = 'y')
+
+plt.tight_layout()
+plt.show()
+
+# Create summary table for is_anomalous
+value_counts = df_train["is_anomalous"].value_counts()
+percentages = (value_counts / value_counts.sum()) * 100
+
+summary_table = pd.DataFrame({
+    "Count": value_counts,
+    "Percentage": percentages.round(2)
+}).rename(index={0: "Normal", 1: "Attack"})
+
+summary_table
+```
+
+The `is_anomalous` classification target shows a near-even class distribution indicating the the dataset is well balanced. There should be no need for resampling or class weighting to correct the set. It appears this dataset will be a good candidate for learning models.
+
+
+## Analysis plan
+
+### Problem Introduction
+
+The project is to build and evaluate models capable of detecting anomalous network traffic based on connection-level features from the NSL-KDD dataset. The problem is framed as a binary classification task, where each record is labeled as either normal or anomalous. This has real-world applications in intrusion detection systems and network security monitoring.
+
+The project will explore both supervised and unsupervised machine learning techniques to assess their effectiveness in identifying attacks from structured network traffic data.
+
+### Feature Engineering Strategy
+
+To ensure a fair and consistent comparison, we will apply the same feature engineering pipeline to both supervised and unsupervised models. All features will be assigned appropriate column names based on the NSL-KDD documentation. Categorical variables such as protocol_type, service, and flag will be one-hot encoded, and low-variance or non-informative columns will be removed. Numeric features will be standardized using a scaler to normalize their ranges.
+
+For supervised models, these engineered features will be used alongside the binary target is_anomalous. For unsupervised models, the same processed features will be used without labels, allowing the models to explore underlying structure or detect anomalous patterns. This consistent preprocessing ensures that differences in performance can be attributed to the modeling approaches rather than inconsistencies in data preparation.
+
+### Q1 Supervised Learning
+
+For the supervised learning portion of the project, we will train and evaluate models using the labeled NSL-KDD dataset to classify network traffic as normal or anomalous. Specifically, we will implement and compare a Long Short-Term Memory (LSTM) neural network and a Support Vector Machine (SVM). These models will be trained on the same feature-engineered data, using the is_anomalous column as the target. Model performance will be assessed using standard classification metrics, including accuracy, precision, recall, F1-score, and ROC AUC.
+
+### Q2 Unsupervised Learning
+
+For the unsupervised learning portion of the project, we will explore clustering-based approaches to detect anomalies in network traffic without relying on labeled data. We plan to experiment with techniques such as K-Means and DBSCAN to group similar observations and identify outliers that may correspond to attacks. After clustering, we will evaluate how well the resulting groupings align with the true labels using appropriate metrics for unsupervised learning. This will help us assess the potential of unsupervised models to detect anomalous behavior in the absence of supervision.
+
+### Summary Comparison
+
+To compare the supervised and unsupervised approaches, we will evaluate their ability to correctly identify anomalous traffic using relevant metrics for each method. We will also consider practical factors such as interpretability, scalability, and the need for labeled data.
 
 ### Project Timeline
 
