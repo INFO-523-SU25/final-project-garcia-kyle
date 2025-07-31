@@ -35,22 +35,51 @@ from scipy import stats # for analysis plan
 #| label: load-dataset
 #| message: false
 
-network_traffic = pd.read_csv('data/embedded_system_network_security_dataset.csv')
+network_traffic_test = pd.read_csv('data/KDDTest+.txt')
+network_traffic_train = pd.read_csv('data/KDDTrain+.txt')
 
-network_traffic.shape
+df_train = network_traffic_test.copy()
+df_test = network_traffic_train.copy()
+
+'''
+Columns recieved from kaggle project 
+https://www.kaggle.com/code/faizankhandeshmukh/intrusion-detection-system
+
+'''
+
+# Define the list of column names based on the NSL-KDD dataset description
+columns = [
+    'duration', 'protocol_type', 'service', 'flag', 'src_bytes', 'dst_bytes',
+    'land', 'wrong_fragment', 'urgent', 'hot', 'num_failed_logins',
+    'logged_in', 'num_compromised', 'root_shell', 'su_attempted', 'num_root',
+    'num_file_creations', 'num_shells', 'num_access_files', 'num_outbound_cmds',
+    'is_host_login', 'is_guest_login', 'count', 'srv_count', 'serror_rate',
+    'srv_serror_rate', 'rerror_rate', 'srv_rerror_rate', 'same_srv_rate',
+    'diff_srv_rate', 'srv_diff_host_rate', 'dst_host_count',
+    'dst_host_srv_count', 'dst_host_same_srv_rate', 'dst_host_diff_srv_rate',
+    'dst_host_same_src_port_rate', 'dst_host_srv_diff_host_rate',
+    'dst_host_serror_rate', 'dst_host_srv_serror_rate', 'dst_host_rerror_rate',
+    'dst_host_srv_rerror_rate', 'attack', 'level'
+]
+
+# Assign the column names to the dataframe
+df_test.columns = columns
+df_train.columns = columns
+
+print('Shapes (test, train):', df_test.shape, df_train.shape)
 ```
 
-We use the [Embedded System Network Security Dataset from Kaggle](https://www.kaggle.com/datasets/embedded/system-network-security-dataset), which contains **1,000 rows** and **18 columns** of labeled network traffic with features like packet size, inter-arrival time, and TCP/UDP flags. We utilize features representing protocol types (i.e., `protocol_type_TCP`, `protocol_type_UDP`), specific IP addresses (i.e., `src_ip_192.168.1.2`), and Transmission Control Protocol (TCP) flags (`tcp_flags_FIN`, `tcp_flags_SYN`, `tcp_flags_SYN-ACK`). The `label` field indicates normal or anomalous observations which allows us to use supervised learning approaches.
+We are using testing and training network intrusion detection datasets from [NSL-KDD from Kaggle](https://www.kaggle.com/datasets/hassan06/nslkdd/data?select=KDDTrain1.jpg), which contains **12,5972 rows** and **43 columns** of labeled intrusion detection network traffic in the test dataset. The `attack` field indicates normal or anomalous (multi-class) observations which allows us to use supervised learning approaches for classifying anomalous network activity.
 
 We chose this dataset because it provides a rich and realistic representation of network traffic data. The presence of labeled data allows us to train and evaluate supervised models; the diversity and volume of traffic patterns make it well-suited for exploring unsupervised anomaly detection techniques as well. This balance between complexity and feature richness aligns well with our research questions and modeling goals.
 
 ```{python}
 #| label: preview-data-columns
-cols = network_traffic.columns
-for col in cols:
+cols_test = df_test.columns
+
+for col in cols_test:
   print(col)
 ```
-
 
 ## Questions
 
@@ -62,44 +91,66 @@ Summary. How do the supervised and unsupervised approaches compare?
 
 ## Analysis plan
 
-## Analysis plan
-
 ### Variables
 
-| Column Name             | Data Type | Description                                                 |
-| ----------------------- | --------- | ----------------------------------------------------------- |
-| `packet_size`           | float64   | Size of the network packet in bytes.                        |
-| `inter_arrival_time`    | float64   | Time difference between consecutive packets.                |
-| `src_port`              | int64     | Source port number of the network flow.                     |
-| `dst_port`              | int64     | Destination port number of the network flow.                |
-| `packet_count_5s`       | float64   | Number of packets transmitted in a 5-second window.         |
-| `mean_packet_size`      | float64   | Average packet size over a time window or session.          |
-| `spectral_entropy`      | float64   | Frequency-domain feature extracted using Wavelet Transform. |
-| `frequency_band_energy` | float64   | Energy within different frequency bands (Wavelet-derived).  |
-| `label`                 | float64   | 0 for normal traffic, 1 for anomalous (malicious) traffic.  |
-| `protocol_type_TCP`     | bool      | Indicator for TCP protocol.                                 |
-| `protocol_type_UDP`     | bool      | Indicator for UDP protocol.                                 |
-| `src_ip_192.168.1.2`    | bool      | Indicator for source IP = 192.168.1.2.                      |
-| `src_ip_192.168.1.3`    | bool      | Indicator for source IP = 192.168.1.3.                      |
-| `dst_ip_192.168.1.5`    | bool      | Indicator for destination IP = 192.168.1.5.                 |
-| `dst_ip_192.168.1.6`    | bool      | Indicator for destination IP = 192.168.1.6.                 |
-| `tcp_flags_FIN`         | bool      | TCP FIN flag set.                                           |
-| `tcp_flags_SYN`         | bool      | TCP SYN flag set.                                           |
-| `tcp_flags_SYN-ACK`     | bool      | TCP SYN-ACK flag set.                                       |
+| Column Name                  | Data Type | Description                                                                 |
+|-----------------------------|-----------|-----------------------------------------------------------------------------|
+| `duration`                  | int64     | Length (in seconds) of the connection.                                      |
+| `protocol_type`             | object    | Protocol used (e.g., tcp, udp, icmp).                                       |
+| `service`                   | object    | Network service on the destination (e.g., http, telnet).                    |
+| `flag`                      | object    | Status flag of the connection.                                              |
+| `src_bytes`                 | int64     | Number of data bytes sent from source to destination.                       |
+| `dst_bytes`                 | int64     | Number of data bytes sent from destination to source.                       |
+| `land`                      | int64     | 1 if connection is from/to the same host/port; 0 otherwise.                 |
+| `wrong_fragment`            | int64     | Number of wrong fragments.                                                  |
+| `urgent`                    | int64     | Number of urgent packets.                                                   |
+| `hot`                       | int64     | Number of "hot" indicators.                                                 |
+| `num_failed_logins`         | int64     | Number of failed login attempts.                                            |
+| `logged_in`                 | int64     | 1 if successfully logged in; 0 otherwise.                                   |
+| `num_compromised`           | int64     | Number of compromised conditions.                                           |
+| `root_shell`                | int64     | 1 if root shell is obtained; 0 otherwise.                                   |
+| `su_attempted`              | int64     | 1 if "su root" command attempted; 0 otherwise.                              |
+| `num_root`                  | int64     | Number of "root" accesses.                                                  |
+| `num_file_creations`        | int64     | Number of file creation operations.                                         |
+| `num_shells`                | int64     | Number of shell prompts invoked.                                            |
+| `num_access_files`          | int64     | Number of accesses to control files.                                        |
+| `num_outbound_cmds`         | int64     | Number of outbound commands (always 0 in KDD99).                            |
+| `is_host_login`             | int64     | 1 if login is to a host account; 0 otherwise.                               |
+| `is_guest_login`            | int64     | 1 if login is to a guest account; 0 otherwise.                              |
+| `count`                     | int64     | Number of connections to the same host in the past 2 seconds.              |
+| `srv_count`                 | int64     | Number of connections to the same service in the past 2 seconds.           |
+| `serror_rate`               | float64   | % of connections with SYN errors.                                           |
+| `srv_serror_rate`           | float64   | % of connections to the same service with SYN errors.                       |
+| `rerror_rate`               | float64   | % of connections with REJ errors.                                           |
+| `srv_rerror_rate`           | float64   | % of connections to the same service with REJ errors.                       |
+| `same_srv_rate`             | float64   | % of connections to the same service.                                       |
+| `diff_srv_rate`             | float64   | % of connections to different services.                                     |
+| `srv_diff_host_rate`        | float64   | % of connections to different hosts on the same service.                    |
+| `dst_host_count`            | int64     | Number of connections to the destination host.                              |
+| `dst_host_srv_count`        | int64     | Number of connections to the destination host and service.                 |
+| `dst_host_same_srv_rate`    | float64   | % of connections to the same service on the destination host.               |
+| `dst_host_diff_srv_rate`    | float64   | % of connections to different services on the destination host.             |
+| `dst_host_same_src_port_rate` | float64 | % of connections from the same source port.                                 |
+| `dst_host_srv_diff_host_rate` | float64 | % of connections to the same service from different hosts.                  |
+| `dst_host_serror_rate`      | float64   | % of connections with SYN errors to the destination host.                   |
+| `dst_host_srv_serror_rate`  | float64   | % of connections with SYN errors to the destination service.                |
+| `dst_host_rerror_rate`      | float64   | % of connections with REJ errors to the destination host.                   |
+| `dst_host_srv_rerror_rate`  | float64   | % of connections with REJ errors to the destination service.                |
+| `attack`                    | object    | Label indicating the type of attack or "normal".                            |
+| `level`                     | int64     | Severity or confidence score of the attack (if available).                  |
 
-## Exploratory Data Analysis
+
+### Exploratory Data Analysis
 
 We take a quick look at the data to see if the data is telling anything right away.
 
-
-
 ```{python}
-print("Info:\n", network_traffic.info())
-print("\nDescribe the numerics:\n",network_traffic.describe())
-print("\nDuplicates:",network_traffic.duplicated().sum())
+#| label: Exploratory Data Analysis
+print("Info:\n", df_train.info())
+print("\nDescribe the numerics:\n",df_train.describe())
+print("\nDuplicates:",df_train.duplicated().sum())
 ```
 
-We see that `mean_packet_size` is entirely zeroes, so that column will be removed.
 
 ## Normal vs Anomalous Traffic
 
@@ -115,33 +166,40 @@ First, look at the amount of normal v. anomalous data.
 sns.set(style="whitegrid")
 
 # plot
-plt.figure(figsize=(6, 4))
-sns.countplot(data=network_traffic, x="label", palette="Set2")
+plt.figure(figsize=(10, 4))
+sns.countplot(
+  data=df_test, 
+  x="attack",
+  hue="attack", 
+  palette="Set2",
+  order=df_test['attack'].value_counts().index
+  )
 
 plt.title("Distribution of Normal vs Anomalous Traffic")
-plt.xlabel("Label (0 = Normal, 1 = Anomalous)")
+plt.xlabel("Attack Type")
 plt.ylabel("Count")
+plt.xticks(rotation=45)
 
 plt.tight_layout()
 plt.show()
 
-print(network_traffic['label'].value_counts())
+print(df_test['attack'].value_counts())
 
 ```
 
-The plot suggests class imbalance with the majority of traffic normal. If we don't deal with imbalance, there will be significant issues. For example, if the imbalance is left as-is, we could just say that every traffic sample is normal and be right approximately 90% of the time. 
+The plot suggests 
 
 ## Timeline
 
 ### Project Timeline
 
-| Task Name                         | Status      | Due    | Priority | Summary                                                                 |
-| --------------------------------- | ----------- | ------ | -------- | ----------------------------------------------------------------------- |
-| Dataset exploration               | In Progress | Week 1 | High     | Load the dataset, inspect features, handle any preprocessing needs.     |
-| Define research questions         | Complete    | Week 1 | High     | Clarify goals for supervised and unsupervised anomaly detection.        |
-| Supervised model development      | Not Started | Week 2 | High     | Train models like Random Forest, Logistic Regression, and XGBoost.      |
-| Evaluation of supervised models   | Not Started | Week 3 | High     | Use accuracy, precision, recall, F₁, and ROC-AUC to assess performance. |
-| Unsupervised model development    | Not Started | Week 3 | Medium   | Explore methods like Isolation Forest and clustering.                   |
-| Evaluation of unsupervised models | Not Started | Week 4 | Medium   | Compare anomaly scores to labeled data using precision-recall metrics.  |
-| Comparative analysis              | Not Started | Week 4 | High     | Analyze strengths and weaknesses of both approaches.                    |
-| Final report & presentation       | Not Started | Week 5 | High     | Compile results, figures, and discussion into final deliverables.       |
+| Task Name | Status | Due | Priority | Summary |
+|-----------|-----------|-----------|-----------|------------------------------|
+| Dataset exploration | In Progress | Week 1 | High | Load the dataset, inspect features, handle any preprocessing needs. |
+| Define research questions | Complete | Week 1 | High | Clarify goals for supervised and unsupervised anomaly detection. |
+| Supervised model development | Not Started | Week 2 | High | Train models like Random Forest, Logistic Regression, and XGBoost. |
+| Evaluation of supervised models | Not Started | Week 3 | High | Use accuracy, precision, recall, F₁, and ROC-AUC to assess performance. |
+| Unsupervised model development | Not Started | Week 3 | Medium | Explore methods like Isolation Forest and clustering. |
+| Evaluation of unsupervised models | Not Started | Week 4 | Medium | Compare anomaly scores to labeled data using precision-recall metrics. |
+| Comparative analysis | Not Started | Week 4 | High | Analyze strengths and weaknesses of both approaches. |
+| Final report & presentation | Not Started | Week 5 | High | Compile results, figures, and discussion into final deliverables. |
