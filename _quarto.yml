@@ -1,12 +1,13 @@
 project:
   type: website
+  output-dir: docs
 
 website:
-  title: Project Title
+  title: Packet Traffic Learning
   navbar:
     right:
       - icon: github
-        href: https://github.com/INFO-523-SU24/final-project # Need to change to your project repo
+        href: https://github.com/INFO-523-SU25/final-project-garcia-kyle
     left:
       - text: Project
         href: index.qmd
