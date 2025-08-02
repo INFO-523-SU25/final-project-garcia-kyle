@@ -1,11 +1,11 @@
 ---
-title: "Project Title"
+title: "Packet Traffic Learning"
 subtitle: "INFO 523 - Final Project"
 author: 
-  - name: "Team name - Team member 1, Team member 2,..."
+  - name: "The Anomalists - Joey Garcia, David Kyle"
     affiliations:
       - name: "College of Information Science, University of Arizona"
-description: "Project description"
+description: "Project description: Our project aims to develop a predictive model to detect anomalous network behavior using packet-level and statistical features derived from network traffic. With machine learning models, we aim to accurately classify and predict network anomalies, which is essential for intrusion detection, network security monitoring, and incident response automation."
 format:
    html:
     code-tools: true
