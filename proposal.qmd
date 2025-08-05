@@ -35,8 +35,8 @@ from scipy import stats # for analysis plan
 #| label: load-dataset
 #| message: false
 
-network_traffic_train = pd.read_csv('data/KDDTrain+.txt')
-network_traffic_test = pd.read_csv('data/KDDTest+.txt')
+network_traffic_train = pd.read_csv('data/KDDTrain.csv')
+network_traffic_test = pd.read_csv('data/KDDTest.csv')
 
 df_train = network_traffic_train.copy()
 df_test = network_traffic_test.copy()
