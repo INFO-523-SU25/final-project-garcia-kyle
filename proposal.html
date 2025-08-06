@@ -4138,40 +4138,38 @@ vertical-align: -.125em;
 </div>
 <section id="dataset" class="level2">
 <h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
+<p>Our dataset doesn’t include column names so we will add them to the in-memory dataframes.</p>
 <div id="load-dataset" class="cell" data-message="false" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>network_traffic_train <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/KDDTrain.csv&#39;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2"></a>network_traffic_test <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/KDDTest.csv&#39;</span>)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>df_train <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/KDDTrain.csv&#39;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a>df_test <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/KDDTest.csv&#39;</span>)</span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a>df_train <span class="op">=</span> network_traffic_train.copy()</span>
-<span id="cb2-5"><a href="#cb2-5"></a>df_test <span class="op">=</span> network_traffic_test.copy()</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co">&#39;&#39;&#39;</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="co">Columns recieved from kaggle project </span></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="co">https://www.kaggle.com/code/faizankhandeshmukh/intrusion-detection-system</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="co">&#39;&#39;&#39;</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="co"># Define the list of column names based on the NSL-KDD dataset description</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a>columns <span class="op">=</span> [</span>
-<span id="cb2-15"><a href="#cb2-15"></a>    <span class="st">&#39;duration&#39;</span>, <span class="st">&#39;protocol_type&#39;</span>, <span class="st">&#39;service&#39;</span>, <span class="st">&#39;flag&#39;</span>, <span class="st">&#39;src_bytes&#39;</span>, <span class="st">&#39;dst_bytes&#39;</span>,</span>
-<span id="cb2-16"><a href="#cb2-16"></a>    <span class="st">&#39;land&#39;</span>, <span class="st">&#39;wrong_fragment&#39;</span>, <span class="st">&#39;urgent&#39;</span>, <span class="st">&#39;hot&#39;</span>, <span class="st">&#39;num_failed_logins&#39;</span>,</span>
-<span id="cb2-17"><a href="#cb2-17"></a>    <span class="st">&#39;logged_in&#39;</span>, <span class="st">&#39;num_compromised&#39;</span>, <span class="st">&#39;root_shell&#39;</span>, <span class="st">&#39;su_attempted&#39;</span>, <span class="st">&#39;num_root&#39;</span>,</span>
-<span id="cb2-18"><a href="#cb2-18"></a>    <span class="st">&#39;num_file_creations&#39;</span>, <span class="st">&#39;num_shells&#39;</span>, <span class="st">&#39;num_access_files&#39;</span>, <span class="st">&#39;num_outbound_cmds&#39;</span>,</span>
-<span id="cb2-19"><a href="#cb2-19"></a>    <span class="st">&#39;is_host_login&#39;</span>, <span class="st">&#39;is_guest_login&#39;</span>, <span class="st">&#39;count&#39;</span>, <span class="st">&#39;srv_count&#39;</span>, <span class="st">&#39;serror_rate&#39;</span>,</span>
-<span id="cb2-20"><a href="#cb2-20"></a>    <span class="st">&#39;srv_serror_rate&#39;</span>, <span class="st">&#39;rerror_rate&#39;</span>, <span class="st">&#39;srv_rerror_rate&#39;</span>, <span class="st">&#39;same_srv_rate&#39;</span>,</span>
-<span id="cb2-21"><a href="#cb2-21"></a>    <span class="st">&#39;diff_srv_rate&#39;</span>, <span class="st">&#39;srv_diff_host_rate&#39;</span>, <span class="st">&#39;dst_host_count&#39;</span>,</span>
-<span id="cb2-22"><a href="#cb2-22"></a>    <span class="st">&#39;dst_host_srv_count&#39;</span>, <span class="st">&#39;dst_host_same_srv_rate&#39;</span>, <span class="st">&#39;dst_host_diff_srv_rate&#39;</span>,</span>
-<span id="cb2-23"><a href="#cb2-23"></a>    <span class="st">&#39;dst_host_same_src_port_rate&#39;</span>, <span class="st">&#39;dst_host_srv_diff_host_rate&#39;</span>,</span>
-<span id="cb2-24"><a href="#cb2-24"></a>    <span class="st">&#39;dst_host_serror_rate&#39;</span>, <span class="st">&#39;dst_host_srv_serror_rate&#39;</span>, <span class="st">&#39;dst_host_rerror_rate&#39;</span>,</span>
-<span id="cb2-25"><a href="#cb2-25"></a>    <span class="st">&#39;dst_host_srv_rerror_rate&#39;</span>, <span class="st">&#39;attack&#39;</span>, <span class="st">&#39;level&#39;</span></span>
-<span id="cb2-26"><a href="#cb2-26"></a>]</span>
-<span id="cb2-27"><a href="#cb2-27"></a></span>
-<span id="cb2-28"><a href="#cb2-28"></a><span class="co"># Assign the column names to the dataframe</span></span>
-<span id="cb2-29"><a href="#cb2-29"></a>df_train.columns <span class="op">=</span> columns</span>
-<span id="cb2-30"><a href="#cb2-30"></a>df_test.columns <span class="op">=</span> columns</span>
-<span id="cb2-31"><a href="#cb2-31"></a></span>
-<span id="cb2-32"><a href="#cb2-32"></a></span>
-<span id="cb2-33"><a href="#cb2-33"></a><span class="bu">print</span>(<span class="st">&#39;Shapes (train, test):&#39;</span>, df_train.shape, df_test.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">&#39;&#39;&#39;</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">Columns recieved from kaggle project </span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">https://www.kaggle.com/code/faizankhandeshmukh/intrusion-detection-system</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">&#39;&#39;&#39;</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># Define the list of column names based on the NSL-KDD dataset description</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>columns <span class="op">=</span> [</span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="st">&#39;duration&#39;</span>, <span class="st">&#39;protocol_type&#39;</span>, <span class="st">&#39;service&#39;</span>, <span class="st">&#39;flag&#39;</span>, <span class="st">&#39;src_bytes&#39;</span>, <span class="st">&#39;dst_bytes&#39;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    <span class="st">&#39;land&#39;</span>, <span class="st">&#39;wrong_fragment&#39;</span>, <span class="st">&#39;urgent&#39;</span>, <span class="st">&#39;hot&#39;</span>, <span class="st">&#39;num_failed_logins&#39;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14"></a>    <span class="st">&#39;logged_in&#39;</span>, <span class="st">&#39;num_compromised&#39;</span>, <span class="st">&#39;root_shell&#39;</span>, <span class="st">&#39;su_attempted&#39;</span>, <span class="st">&#39;num_root&#39;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15"></a>    <span class="st">&#39;num_file_creations&#39;</span>, <span class="st">&#39;num_shells&#39;</span>, <span class="st">&#39;num_access_files&#39;</span>, <span class="st">&#39;num_outbound_cmds&#39;</span>,</span>
+<span id="cb2-16"><a href="#cb2-16"></a>    <span class="st">&#39;is_host_login&#39;</span>, <span class="st">&#39;is_guest_login&#39;</span>, <span class="st">&#39;count&#39;</span>, <span class="st">&#39;srv_count&#39;</span>, <span class="st">&#39;serror_rate&#39;</span>,</span>
+<span id="cb2-17"><a href="#cb2-17"></a>    <span class="st">&#39;srv_serror_rate&#39;</span>, <span class="st">&#39;rerror_rate&#39;</span>, <span class="st">&#39;srv_rerror_rate&#39;</span>, <span class="st">&#39;same_srv_rate&#39;</span>,</span>
+<span id="cb2-18"><a href="#cb2-18"></a>    <span class="st">&#39;diff_srv_rate&#39;</span>, <span class="st">&#39;srv_diff_host_rate&#39;</span>, <span class="st">&#39;dst_host_count&#39;</span>,</span>
+<span id="cb2-19"><a href="#cb2-19"></a>    <span class="st">&#39;dst_host_srv_count&#39;</span>, <span class="st">&#39;dst_host_same_srv_rate&#39;</span>, <span class="st">&#39;dst_host_diff_srv_rate&#39;</span>,</span>
+<span id="cb2-20"><a href="#cb2-20"></a>    <span class="st">&#39;dst_host_same_src_port_rate&#39;</span>, <span class="st">&#39;dst_host_srv_diff_host_rate&#39;</span>,</span>
+<span id="cb2-21"><a href="#cb2-21"></a>    <span class="st">&#39;dst_host_serror_rate&#39;</span>, <span class="st">&#39;dst_host_srv_serror_rate&#39;</span>, <span class="st">&#39;dst_host_rerror_rate&#39;</span>,</span>
+<span id="cb2-22"><a href="#cb2-22"></a>    <span class="st">&#39;dst_host_srv_rerror_rate&#39;</span>, <span class="st">&#39;attack&#39;</span>, <span class="st">&#39;level&#39;</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a>]</span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="co"># Assign the column names to the dataframe</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a>df_train.columns <span class="op">=</span> columns</span>
+<span id="cb2-27"><a href="#cb2-27"></a>df_test.columns <span class="op">=</span> columns</span>
+<span id="cb2-28"><a href="#cb2-28"></a></span>
+<span id="cb2-29"><a href="#cb2-29"></a></span>
+<span id="cb2-30"><a href="#cb2-30"></a><span class="bu">print</span>(<span class="st">&#39;Shapes (train, test):&#39;</span>, df_train.shape, df_test.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Shapes (train, test): (125972, 43) (22543, 43)</code></pre>
 </div>
@@ -4454,7 +4452,7 @@ dtypes: float64(15), int64(24), object(4)
 memory usage: 41.3+ MB</code></pre>
 </div>
 </div>
-<p>The brief look at the data is positive. There are plenty of data points and features, depending on time speeds for fitting models, we may decrease our sample size because hyper parameter using GridSearchCV training may be time intensive. In the data there are no missing values, and the glimpse of the <code>attack</code> column provides insight into why we want to collapse it into a binary column.</p>
+<p>The brief look at the data is positive. There are plenty of data points and features. Depending on time and model fitting speed, we may decrease our sample size, as hyperparameter tuning using GridSearchCV can be time-intensive. There are no missing values, and the glimpse of the attack column provides insight into why we want to collapse it into a binary column.</p>
 </section>
 <section id="normal-vs-anomalous-traffic" class="level3">
 <h3 class="anchored" data-anchor-id="normal-vs-anomalous-traffic">Normal vs Anomalous Traffic</h3>
@@ -5198,261 +5196,260 @@ Name: count, dtype: int64</code></pre>
 <span id="cb8-33"><a href="#cb8-33"></a></span>
 <span id="cb8-34"><a href="#cb8-34"></a><span class="fu">## Dataset</span></span>
 <span id="cb8-35"><a href="#cb8-35"></a></span>
-<span id="cb8-38"><a href="#cb8-38"></a><span class="in">```{python}</span></span>
-<span id="cb8-39"><a href="#cb8-39"></a><span class="co">#| label: load-dataset</span></span>
-<span id="cb8-40"><a href="#cb8-40"></a><span class="co">#| message: false</span></span>
-<span id="cb8-41"><a href="#cb8-41"></a></span>
-<span id="cb8-42"><a href="#cb8-42"></a>network_traffic_train <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/KDDTrain.csv&#39;</span>)</span>
-<span id="cb8-43"><a href="#cb8-43"></a>network_traffic_test <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/KDDTest.csv&#39;</span>)</span>
-<span id="cb8-44"><a href="#cb8-44"></a></span>
-<span id="cb8-45"><a href="#cb8-45"></a>df_train <span class="op">=</span> network_traffic_train.copy()</span>
-<span id="cb8-46"><a href="#cb8-46"></a>df_test <span class="op">=</span> network_traffic_test.copy()</span>
-<span id="cb8-47"><a href="#cb8-47"></a></span>
-<span id="cb8-48"><a href="#cb8-48"></a><span class="co">&#39;&#39;&#39;</span></span>
-<span id="cb8-49"><a href="#cb8-49"></a><span class="co">Columns recieved from kaggle project </span></span>
-<span id="cb8-50"><a href="#cb8-50"></a><span class="co">https://www.kaggle.com/code/faizankhandeshmukh/intrusion-detection-system</span></span>
-<span id="cb8-51"><a href="#cb8-51"></a></span>
-<span id="cb8-52"><a href="#cb8-52"></a><span class="co">&#39;&#39;&#39;</span></span>
-<span id="cb8-53"><a href="#cb8-53"></a></span>
-<span id="cb8-54"><a href="#cb8-54"></a><span class="co"># Define the list of column names based on the NSL-KDD dataset description</span></span>
-<span id="cb8-55"><a href="#cb8-55"></a>columns <span class="op">=</span> [</span>
-<span id="cb8-56"><a href="#cb8-56"></a>    <span class="st">&#39;duration&#39;</span>, <span class="st">&#39;protocol_type&#39;</span>, <span class="st">&#39;service&#39;</span>, <span class="st">&#39;flag&#39;</span>, <span class="st">&#39;src_bytes&#39;</span>, <span class="st">&#39;dst_bytes&#39;</span>,</span>
-<span id="cb8-57"><a href="#cb8-57"></a>    <span class="st">&#39;land&#39;</span>, <span class="st">&#39;wrong_fragment&#39;</span>, <span class="st">&#39;urgent&#39;</span>, <span class="st">&#39;hot&#39;</span>, <span class="st">&#39;num_failed_logins&#39;</span>,</span>
-<span id="cb8-58"><a href="#cb8-58"></a>    <span class="st">&#39;logged_in&#39;</span>, <span class="st">&#39;num_compromised&#39;</span>, <span class="st">&#39;root_shell&#39;</span>, <span class="st">&#39;su_attempted&#39;</span>, <span class="st">&#39;num_root&#39;</span>,</span>
-<span id="cb8-59"><a href="#cb8-59"></a>    <span class="st">&#39;num_file_creations&#39;</span>, <span class="st">&#39;num_shells&#39;</span>, <span class="st">&#39;num_access_files&#39;</span>, <span class="st">&#39;num_outbound_cmds&#39;</span>,</span>
-<span id="cb8-60"><a href="#cb8-60"></a>    <span class="st">&#39;is_host_login&#39;</span>, <span class="st">&#39;is_guest_login&#39;</span>, <span class="st">&#39;count&#39;</span>, <span class="st">&#39;srv_count&#39;</span>, <span class="st">&#39;serror_rate&#39;</span>,</span>
-<span id="cb8-61"><a href="#cb8-61"></a>    <span class="st">&#39;srv_serror_rate&#39;</span>, <span class="st">&#39;rerror_rate&#39;</span>, <span class="st">&#39;srv_rerror_rate&#39;</span>, <span class="st">&#39;same_srv_rate&#39;</span>,</span>
-<span id="cb8-62"><a href="#cb8-62"></a>    <span class="st">&#39;diff_srv_rate&#39;</span>, <span class="st">&#39;srv_diff_host_rate&#39;</span>, <span class="st">&#39;dst_host_count&#39;</span>,</span>
-<span id="cb8-63"><a href="#cb8-63"></a>    <span class="st">&#39;dst_host_srv_count&#39;</span>, <span class="st">&#39;dst_host_same_srv_rate&#39;</span>, <span class="st">&#39;dst_host_diff_srv_rate&#39;</span>,</span>
-<span id="cb8-64"><a href="#cb8-64"></a>    <span class="st">&#39;dst_host_same_src_port_rate&#39;</span>, <span class="st">&#39;dst_host_srv_diff_host_rate&#39;</span>,</span>
-<span id="cb8-65"><a href="#cb8-65"></a>    <span class="st">&#39;dst_host_serror_rate&#39;</span>, <span class="st">&#39;dst_host_srv_serror_rate&#39;</span>, <span class="st">&#39;dst_host_rerror_rate&#39;</span>,</span>
-<span id="cb8-66"><a href="#cb8-66"></a>    <span class="st">&#39;dst_host_srv_rerror_rate&#39;</span>, <span class="st">&#39;attack&#39;</span>, <span class="st">&#39;level&#39;</span></span>
-<span id="cb8-67"><a href="#cb8-67"></a>]</span>
-<span id="cb8-68"><a href="#cb8-68"></a></span>
-<span id="cb8-69"><a href="#cb8-69"></a><span class="co"># Assign the column names to the dataframe</span></span>
-<span id="cb8-70"><a href="#cb8-70"></a>df_train.columns <span class="op">=</span> columns</span>
-<span id="cb8-71"><a href="#cb8-71"></a>df_test.columns <span class="op">=</span> columns</span>
+<span id="cb8-36"><a href="#cb8-36"></a>Our dataset doesn&#39;t include column names so we will add them to the in-memory dataframes.</span>
+<span id="cb8-37"><a href="#cb8-37"></a></span>
+<span id="cb8-40"><a href="#cb8-40"></a><span class="in">```{python}</span></span>
+<span id="cb8-41"><a href="#cb8-41"></a><span class="co">#| label: load-dataset</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a><span class="co">#| message: false</span></span>
+<span id="cb8-43"><a href="#cb8-43"></a></span>
+<span id="cb8-44"><a href="#cb8-44"></a>df_train <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/KDDTrain.csv&#39;</span>)</span>
+<span id="cb8-45"><a href="#cb8-45"></a>df_test <span class="op">=</span> pd.read_csv(<span class="st">&#39;data/KDDTest.csv&#39;</span>)</span>
+<span id="cb8-46"><a href="#cb8-46"></a></span>
+<span id="cb8-47"><a href="#cb8-47"></a><span class="co">&#39;&#39;&#39;</span></span>
+<span id="cb8-48"><a href="#cb8-48"></a><span class="co">Columns recieved from kaggle project </span></span>
+<span id="cb8-49"><a href="#cb8-49"></a><span class="co">https://www.kaggle.com/code/faizankhandeshmukh/intrusion-detection-system</span></span>
+<span id="cb8-50"><a href="#cb8-50"></a></span>
+<span id="cb8-51"><a href="#cb8-51"></a><span class="co">&#39;&#39;&#39;</span></span>
+<span id="cb8-52"><a href="#cb8-52"></a></span>
+<span id="cb8-53"><a href="#cb8-53"></a><span class="co"># Define the list of column names based on the NSL-KDD dataset description</span></span>
+<span id="cb8-54"><a href="#cb8-54"></a>columns <span class="op">=</span> [</span>
+<span id="cb8-55"><a href="#cb8-55"></a>    <span class="st">&#39;duration&#39;</span>, <span class="st">&#39;protocol_type&#39;</span>, <span class="st">&#39;service&#39;</span>, <span class="st">&#39;flag&#39;</span>, <span class="st">&#39;src_bytes&#39;</span>, <span class="st">&#39;dst_bytes&#39;</span>,</span>
+<span id="cb8-56"><a href="#cb8-56"></a>    <span class="st">&#39;land&#39;</span>, <span class="st">&#39;wrong_fragment&#39;</span>, <span class="st">&#39;urgent&#39;</span>, <span class="st">&#39;hot&#39;</span>, <span class="st">&#39;num_failed_logins&#39;</span>,</span>
+<span id="cb8-57"><a href="#cb8-57"></a>    <span class="st">&#39;logged_in&#39;</span>, <span class="st">&#39;num_compromised&#39;</span>, <span class="st">&#39;root_shell&#39;</span>, <span class="st">&#39;su_attempted&#39;</span>, <span class="st">&#39;num_root&#39;</span>,</span>
+<span id="cb8-58"><a href="#cb8-58"></a>    <span class="st">&#39;num_file_creations&#39;</span>, <span class="st">&#39;num_shells&#39;</span>, <span class="st">&#39;num_access_files&#39;</span>, <span class="st">&#39;num_outbound_cmds&#39;</span>,</span>
+<span id="cb8-59"><a href="#cb8-59"></a>    <span class="st">&#39;is_host_login&#39;</span>, <span class="st">&#39;is_guest_login&#39;</span>, <span class="st">&#39;count&#39;</span>, <span class="st">&#39;srv_count&#39;</span>, <span class="st">&#39;serror_rate&#39;</span>,</span>
+<span id="cb8-60"><a href="#cb8-60"></a>    <span class="st">&#39;srv_serror_rate&#39;</span>, <span class="st">&#39;rerror_rate&#39;</span>, <span class="st">&#39;srv_rerror_rate&#39;</span>, <span class="st">&#39;same_srv_rate&#39;</span>,</span>
+<span id="cb8-61"><a href="#cb8-61"></a>    <span class="st">&#39;diff_srv_rate&#39;</span>, <span class="st">&#39;srv_diff_host_rate&#39;</span>, <span class="st">&#39;dst_host_count&#39;</span>,</span>
+<span id="cb8-62"><a href="#cb8-62"></a>    <span class="st">&#39;dst_host_srv_count&#39;</span>, <span class="st">&#39;dst_host_same_srv_rate&#39;</span>, <span class="st">&#39;dst_host_diff_srv_rate&#39;</span>,</span>
+<span id="cb8-63"><a href="#cb8-63"></a>    <span class="st">&#39;dst_host_same_src_port_rate&#39;</span>, <span class="st">&#39;dst_host_srv_diff_host_rate&#39;</span>,</span>
+<span id="cb8-64"><a href="#cb8-64"></a>    <span class="st">&#39;dst_host_serror_rate&#39;</span>, <span class="st">&#39;dst_host_srv_serror_rate&#39;</span>, <span class="st">&#39;dst_host_rerror_rate&#39;</span>,</span>
+<span id="cb8-65"><a href="#cb8-65"></a>    <span class="st">&#39;dst_host_srv_rerror_rate&#39;</span>, <span class="st">&#39;attack&#39;</span>, <span class="st">&#39;level&#39;</span></span>
+<span id="cb8-66"><a href="#cb8-66"></a>]</span>
+<span id="cb8-67"><a href="#cb8-67"></a></span>
+<span id="cb8-68"><a href="#cb8-68"></a><span class="co"># Assign the column names to the dataframe</span></span>
+<span id="cb8-69"><a href="#cb8-69"></a>df_train.columns <span class="op">=</span> columns</span>
+<span id="cb8-70"><a href="#cb8-70"></a>df_test.columns <span class="op">=</span> columns</span>
+<span id="cb8-71"><a href="#cb8-71"></a></span>
 <span id="cb8-72"><a href="#cb8-72"></a></span>
-<span id="cb8-73"><a href="#cb8-73"></a></span>
-<span id="cb8-74"><a href="#cb8-74"></a><span class="bu">print</span>(<span class="st">&#39;Shapes (train, test):&#39;</span>, df_train.shape, df_test.shape)</span>
-<span id="cb8-75"><a href="#cb8-75"></a><span class="in">```</span></span>
-<span id="cb8-76"><a href="#cb8-76"></a></span>
-<span id="cb8-77"><a href="#cb8-77"></a>We are using a training and testing dataset of network intrusion detection from <span class="co">[</span><span class="ot">NSL-KDD from Kaggle</span><span class="co">](https://www.kaggle.com/datasets/hassan06/nslkdd/data?select=KDDTrain1.jpg)</span>. The intrusion detection network traffic training dataset contains **125,972 rows** and **43 columns**, and **22,543 rows** and **43 columns** in the test dataset.</span>
-<span id="cb8-78"><a href="#cb8-78"></a></span>
-<span id="cb8-79"><a href="#cb8-79"></a>The <span class="in">`attack`</span> field indicates normal or anomalous (multi-class) observations which allows us to use learning approaches for classifying anomalous network activity. A new binary classification feature, <span class="in">`is_anomalous`</span>, will be added to indicate if the network connection was anomalous or not. This will be the target field for the project.</span>
-<span id="cb8-80"><a href="#cb8-80"></a></span>
-<span id="cb8-81"><a href="#cb8-81"></a>We chose this dataset because it provides a rich and realistic representation of network traffic data. The presence of labeled data allows us to train and evaluate supervised models; the diversity and volume of traffic patterns make it well-suited for exploring unsupervised anomaly detection techniques as well. This balance between complexity and feature richness aligns well with our research questions and modeling goals.</span>
-<span id="cb8-82"><a href="#cb8-82"></a></span>
-<span id="cb8-83"><a href="#cb8-83"></a><span class="fu">## Questions</span></span>
-<span id="cb8-84"><a href="#cb8-84"></a></span>
-<span id="cb8-85"><a href="#cb8-85"></a>Q1. Using supervised machine learning models such as Long Short-Term Memory (LSTM) and Support Vector Machines (SVMs), can we accurately calssify network traffic as normal and anomalous based on labeled data? How do their performances compare in terms of accuracy, precision, recall, and F1-score?</span>
-<span id="cb8-86"><a href="#cb8-86"></a></span>
-<span id="cb8-87"><a href="#cb8-87"></a>Q2. Can unsupervised learning methods such as K-Means Clustering and Density-Based Clustering (DBSCAN) detect anomalous patterns in network traffic without using labeled data?</span>
-<span id="cb8-88"><a href="#cb8-88"></a></span>
-<span id="cb8-89"><a href="#cb8-89"></a>Summary. How do the supervised and unsupervised approaches compare?</span>
-<span id="cb8-90"><a href="#cb8-90"></a></span>
-<span id="cb8-91"><a href="#cb8-91"></a><span class="fu">## Dataset Analysis</span></span>
-<span id="cb8-92"><a href="#cb8-92"></a></span>
-<span id="cb8-93"><a href="#cb8-93"></a><span class="fu">### Variables</span></span>
-<span id="cb8-94"><a href="#cb8-94"></a></span>
-<span id="cb8-95"><a href="#cb8-95"></a><span class="pp">|</span> Column Name <span class="pp">|</span> Data Type <span class="pp">|</span> Description <span class="pp">|</span></span>
-<span id="cb8-96"><a href="#cb8-96"></a><span class="pp">|---------------|---------------|-------------------------------------------|</span></span>
-<span id="cb8-97"><a href="#cb8-97"></a><span class="pp">|</span> <span class="in">`duration`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Length (in seconds) of the connection. <span class="pp">|</span></span>
-<span id="cb8-98"><a href="#cb8-98"></a><span class="pp">|</span> <span class="in">`protocol_type`</span> <span class="pp">|</span> object <span class="pp">|</span> Protocol used (e.g., tcp, udp, icmp). <span class="pp">|</span></span>
-<span id="cb8-99"><a href="#cb8-99"></a><span class="pp">|</span> <span class="in">`service`</span> <span class="pp">|</span> object <span class="pp">|</span> Network service on the destination (e.g., http, telnet). <span class="pp">|</span></span>
-<span id="cb8-100"><a href="#cb8-100"></a><span class="pp">|</span> <span class="in">`flag`</span> <span class="pp">|</span> object <span class="pp">|</span> Status flag of the connection. <span class="pp">|</span></span>
-<span id="cb8-101"><a href="#cb8-101"></a><span class="pp">|</span> <span class="in">`src_bytes`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of data bytes sent from source to destination. <span class="pp">|</span></span>
-<span id="cb8-102"><a href="#cb8-102"></a><span class="pp">|</span> <span class="in">`dst_bytes`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of data bytes sent from destination to source. <span class="pp">|</span></span>
-<span id="cb8-103"><a href="#cb8-103"></a><span class="pp">|</span> <span class="in">`land`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if connection is from/to the same host/port; 0 otherwise. <span class="pp">|</span></span>
-<span id="cb8-104"><a href="#cb8-104"></a><span class="pp">|</span> <span class="in">`wrong_fragment`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of wrong fragments. <span class="pp">|</span></span>
-<span id="cb8-105"><a href="#cb8-105"></a><span class="pp">|</span> <span class="in">`urgent`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of urgent packets. <span class="pp">|</span></span>
-<span id="cb8-106"><a href="#cb8-106"></a><span class="pp">|</span> <span class="in">`hot`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of &quot;hot&quot; indicators. <span class="pp">|</span></span>
-<span id="cb8-107"><a href="#cb8-107"></a><span class="pp">|</span> <span class="in">`num_failed_logins`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of failed login attempts. <span class="pp">|</span></span>
-<span id="cb8-108"><a href="#cb8-108"></a><span class="pp">|</span> <span class="in">`logged_in`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if successfully logged in; 0 otherwise. <span class="pp">|</span></span>
-<span id="cb8-109"><a href="#cb8-109"></a><span class="pp">|</span> <span class="in">`num_compromised`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of compromised conditions. <span class="pp">|</span></span>
-<span id="cb8-110"><a href="#cb8-110"></a><span class="pp">|</span> <span class="in">`root_shell`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if root shell is obtained; 0 otherwise. <span class="pp">|</span></span>
-<span id="cb8-111"><a href="#cb8-111"></a><span class="pp">|</span> <span class="in">`su_attempted`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if &quot;su root&quot; command attempted; 0 otherwise. <span class="pp">|</span></span>
-<span id="cb8-112"><a href="#cb8-112"></a><span class="pp">|</span> <span class="in">`num_root`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of &quot;root&quot; accesses. <span class="pp">|</span></span>
-<span id="cb8-113"><a href="#cb8-113"></a><span class="pp">|</span> <span class="in">`num_file_creations`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of file creation operations. <span class="pp">|</span></span>
-<span id="cb8-114"><a href="#cb8-114"></a><span class="pp">|</span> <span class="in">`num_shells`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of shell prompts invoked. <span class="pp">|</span></span>
-<span id="cb8-115"><a href="#cb8-115"></a><span class="pp">|</span> <span class="in">`num_access_files`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of accesses to control files. <span class="pp">|</span></span>
-<span id="cb8-116"><a href="#cb8-116"></a><span class="pp">|</span> <span class="in">`num_outbound_cmds`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of outbound commands (always 0 in KDD99). <span class="pp">|</span></span>
-<span id="cb8-117"><a href="#cb8-117"></a><span class="pp">|</span> <span class="in">`is_host_login`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if login is to a host account; 0 otherwise. <span class="pp">|</span></span>
-<span id="cb8-118"><a href="#cb8-118"></a><span class="pp">|</span> <span class="in">`is_guest_login`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if login is to a guest account; 0 otherwise. <span class="pp">|</span></span>
-<span id="cb8-119"><a href="#cb8-119"></a><span class="pp">|</span> <span class="in">`count`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of connections to the same host in the past 2 seconds. <span class="pp">|</span></span>
-<span id="cb8-120"><a href="#cb8-120"></a><span class="pp">|</span> <span class="in">`srv_count`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of connections to the same service in the past 2 seconds. <span class="pp">|</span></span>
-<span id="cb8-121"><a href="#cb8-121"></a><span class="pp">|</span> <span class="in">`serror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with SYN errors. <span class="pp">|</span></span>
-<span id="cb8-122"><a href="#cb8-122"></a><span class="pp">|</span> <span class="in">`srv_serror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service with SYN errors. <span class="pp">|</span></span>
-<span id="cb8-123"><a href="#cb8-123"></a><span class="pp">|</span> <span class="in">`rerror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with REJ errors. <span class="pp">|</span></span>
-<span id="cb8-124"><a href="#cb8-124"></a><span class="pp">|</span> <span class="in">`srv_rerror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service with REJ errors. <span class="pp">|</span></span>
-<span id="cb8-125"><a href="#cb8-125"></a><span class="pp">|</span> <span class="in">`same_srv_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service. <span class="pp">|</span></span>
-<span id="cb8-126"><a href="#cb8-126"></a><span class="pp">|</span> <span class="in">`diff_srv_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to different services. <span class="pp">|</span></span>
-<span id="cb8-127"><a href="#cb8-127"></a><span class="pp">|</span> <span class="in">`srv_diff_host_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to different hosts on the same service. <span class="pp">|</span></span>
-<span id="cb8-128"><a href="#cb8-128"></a><span class="pp">|</span> <span class="in">`dst_host_count`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of connections to the destination host. <span class="pp">|</span></span>
-<span id="cb8-129"><a href="#cb8-129"></a><span class="pp">|</span> <span class="in">`dst_host_srv_count`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of connections to the destination host and service. <span class="pp">|</span></span>
-<span id="cb8-130"><a href="#cb8-130"></a><span class="pp">|</span> <span class="in">`dst_host_same_srv_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service on the destination host. <span class="pp">|</span></span>
-<span id="cb8-131"><a href="#cb8-131"></a><span class="pp">|</span> <span class="in">`dst_host_diff_srv_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to different services on the destination host. <span class="pp">|</span></span>
-<span id="cb8-132"><a href="#cb8-132"></a><span class="pp">|</span> <span class="in">`dst_host_same_src_port_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections from the same source port. <span class="pp">|</span></span>
-<span id="cb8-133"><a href="#cb8-133"></a><span class="pp">|</span> <span class="in">`dst_host_srv_diff_host_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service from different hosts. <span class="pp">|</span></span>
-<span id="cb8-134"><a href="#cb8-134"></a><span class="pp">|</span> <span class="in">`dst_host_serror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with SYN errors to the destination host. <span class="pp">|</span></span>
-<span id="cb8-135"><a href="#cb8-135"></a><span class="pp">|</span> <span class="in">`dst_host_srv_serror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with SYN errors to the destination service. <span class="pp">|</span></span>
-<span id="cb8-136"><a href="#cb8-136"></a><span class="pp">|</span> <span class="in">`dst_host_rerror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with REJ errors to the destination host. <span class="pp">|</span></span>
-<span id="cb8-137"><a href="#cb8-137"></a><span class="pp">|</span> <span class="in">`dst_host_srv_rerror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with REJ errors to the destination service. <span class="pp">|</span></span>
-<span id="cb8-138"><a href="#cb8-138"></a><span class="pp">|</span> <span class="in">`attack`</span> <span class="pp">|</span> object <span class="pp">|</span> Label indicating the type of attack or &quot;normal&quot;. <span class="pp">|</span></span>
-<span id="cb8-139"><a href="#cb8-139"></a><span class="pp">|</span> <span class="in">`level`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Severity or confidence score of the attack (if available). <span class="pp">|</span></span>
-<span id="cb8-140"><a href="#cb8-140"></a></span>
-<span id="cb8-141"><a href="#cb8-141"></a><span class="fu">### Exploratory Data Analysis</span></span>
-<span id="cb8-142"><a href="#cb8-142"></a></span>
-<span id="cb8-143"><a href="#cb8-143"></a>We take a quick look at the training data to see if there are any obvious imbalances.</span>
-<span id="cb8-144"><a href="#cb8-144"></a></span>
-<span id="cb8-147"><a href="#cb8-147"></a><span class="in">```{python}</span></span>
-<span id="cb8-148"><a href="#cb8-148"></a><span class="co">#| label: Exploratory Data Analysis</span></span>
-<span id="cb8-149"><a href="#cb8-149"></a><span class="bu">print</span>(<span class="st">&quot;Shape:&quot;</span>, df_train.shape)</span>
-<span id="cb8-150"><a href="#cb8-150"></a><span class="bu">print</span>(<span class="st">&quot;Missing values:&quot;</span>, df_train.isna().<span class="bu">sum</span>().<span class="bu">sum</span>())</span>
-<span id="cb8-151"><a href="#cb8-151"></a><span class="bu">print</span>(<span class="st">&quot;Duplicates:&quot;</span>, df_train.duplicated().<span class="bu">sum</span>())</span>
-<span id="cb8-152"><a href="#cb8-152"></a><span class="bu">print</span>(<span class="st">&quot;Unique attack labels:&quot;</span>, df_train[<span class="st">&#39;attack&#39;</span>].nunique())</span>
-<span id="cb8-153"><a href="#cb8-153"></a><span class="bu">print</span>(<span class="st">&quot;Attack label distribution:</span><span class="ch">\n</span><span class="st">&quot;</span>, df_train[<span class="st">&#39;attack&#39;</span>].value_counts().head(<span class="dv">5</span>))</span>
-<span id="cb8-154"><a href="#cb8-154"></a></span>
-<span id="cb8-155"><a href="#cb8-155"></a><span class="co"># Show types and non-null counts</span></span>
-<span id="cb8-156"><a href="#cb8-156"></a>df_train.info(verbose<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb8-157"><a href="#cb8-157"></a><span class="in">```</span></span>
-<span id="cb8-158"><a href="#cb8-158"></a></span>
-<span id="cb8-159"><a href="#cb8-159"></a>The brief look at the data is positive. There are plenty of data points and features, depending on time speeds for fitting models, we may decrease our sample size because hyper parameter using GridSearchCV training may be time intensive. In the data there are no missing values, and the glimpse of the <span class="in">`attack`</span> column provides insight into why we want to collapse it into a binary column.</span>
-<span id="cb8-160"><a href="#cb8-160"></a></span>
-<span id="cb8-161"><a href="#cb8-161"></a><span class="fu">### Normal vs Anomalous Traffic</span></span>
-<span id="cb8-162"><a href="#cb8-162"></a></span>
-<span id="cb8-163"><a href="#cb8-163"></a>First, look at the amount of normal v. anomalous data.</span>
-<span id="cb8-164"><a href="#cb8-164"></a></span>
-<span id="cb8-167"><a href="#cb8-167"></a><span class="in">```{python}</span></span>
-<span id="cb8-168"><a href="#cb8-168"></a><span class="co">#| label: class-distribution</span></span>
-<span id="cb8-169"><a href="#cb8-169"></a><span class="co">#| echo: false</span></span>
-<span id="cb8-170"><a href="#cb8-170"></a><span class="co">#| message: false</span></span>
-<span id="cb8-171"><a href="#cb8-171"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-172"><a href="#cb8-172"></a></span>
-<span id="cb8-173"><a href="#cb8-173"></a><span class="co"># plot style</span></span>
-<span id="cb8-174"><a href="#cb8-174"></a>sns.<span class="bu">set</span>(style<span class="op">=</span><span class="st">&quot;whitegrid&quot;</span>)</span>
-<span id="cb8-175"><a href="#cb8-175"></a></span>
-<span id="cb8-176"><a href="#cb8-176"></a><span class="co"># Gtop 10 attack types</span></span>
-<span id="cb8-177"><a href="#cb8-177"></a>top_10_attacks <span class="op">=</span> df_train[<span class="st">&#39;attack&#39;</span>].value_counts().head(<span class="dv">10</span>).index</span>
-<span id="cb8-178"><a href="#cb8-178"></a></span>
-<span id="cb8-179"><a href="#cb8-179"></a><span class="co"># plot</span></span>
-<span id="cb8-180"><a href="#cb8-180"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
-<span id="cb8-181"><a href="#cb8-181"></a>sns.countplot(</span>
-<span id="cb8-182"><a href="#cb8-182"></a>    data<span class="op">=</span>df_train[df_train[<span class="st">&#39;attack&#39;</span>].isin(top_10_attacks)],</span>
-<span id="cb8-183"><a href="#cb8-183"></a>    x<span class="op">=</span><span class="st">&quot;attack&quot;</span>,</span>
-<span id="cb8-184"><a href="#cb8-184"></a>    hue<span class="op">=</span><span class="st">&quot;attack&quot;</span>,</span>
-<span id="cb8-185"><a href="#cb8-185"></a>    palette<span class="op">=</span><span class="st">&quot;Set2&quot;</span>,</span>
-<span id="cb8-186"><a href="#cb8-186"></a>    order<span class="op">=</span>top_10_attacks</span>
-<span id="cb8-187"><a href="#cb8-187"></a>)</span>
-<span id="cb8-188"><a href="#cb8-188"></a></span>
-<span id="cb8-189"><a href="#cb8-189"></a>plt.title(<span class="st">&quot;Top 10 Attack Types in Training Data&quot;</span>)</span>
-<span id="cb8-190"><a href="#cb8-190"></a>plt.xlabel(<span class="st">&quot;Attack Type&quot;</span>)</span>
-<span id="cb8-191"><a href="#cb8-191"></a>plt.ylabel(<span class="st">&quot;Count&quot;</span>)</span>
-<span id="cb8-192"><a href="#cb8-192"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
-<span id="cb8-193"><a href="#cb8-193"></a></span>
-<span id="cb8-194"><a href="#cb8-194"></a>plt.tight_layout()</span>
-<span id="cb8-195"><a href="#cb8-195"></a>plt.show()</span>
-<span id="cb8-196"><a href="#cb8-196"></a></span>
-<span id="cb8-197"><a href="#cb8-197"></a><span class="co"># Print the full frequency table</span></span>
-<span id="cb8-198"><a href="#cb8-198"></a><span class="bu">print</span>(df_train[<span class="st">&#39;attack&#39;</span>].value_counts())</span>
-<span id="cb8-199"><a href="#cb8-199"></a></span>
-<span id="cb8-200"><a href="#cb8-200"></a><span class="in">```</span></span>
-<span id="cb8-201"><a href="#cb8-201"></a></span>
-<span id="cb8-202"><a href="#cb8-202"></a>The plot provides an idea of the specific attack types expressesd in the data. The plot communicates why it makes sense to group all non-normal traffic together.</span>
-<span id="cb8-203"><a href="#cb8-203"></a></span>
-<span id="cb8-204"><a href="#cb8-204"></a>We feature engineer a new column, <span class="in">`is_anomalous`</span>, this contains 0 if the connection is normal and 1 if the connection is not normal.</span>
-<span id="cb8-205"><a href="#cb8-205"></a></span>
-<span id="cb8-208"><a href="#cb8-208"></a><span class="in">```{python}</span></span>
-<span id="cb8-209"><a href="#cb8-209"></a><span class="co">#| label: feature-engineering</span></span>
-<span id="cb8-210"><a href="#cb8-210"></a><span class="co"># create binary target column: 1 = attack, 0 = normal</span></span>
-<span id="cb8-211"><a href="#cb8-211"></a></span>
-<span id="cb8-212"><a href="#cb8-212"></a>df_train[<span class="st">&#39;is_anomalous&#39;</span>] <span class="op">=</span> df_train[<span class="st">&#39;attack&#39;</span>].<span class="bu">apply</span>(</span>
-<span id="cb8-213"><a href="#cb8-213"></a>  <span class="kw">lambda</span> x: <span class="dv">0</span> <span class="cf">if</span> x <span class="op">==</span> <span class="st">&#39;normal&#39;</span> <span class="cf">else</span> <span class="dv">1</span>)</span>
-<span id="cb8-214"><a href="#cb8-214"></a></span>
-<span id="cb8-215"><a href="#cb8-215"></a><span class="in">```</span></span>
-<span id="cb8-216"><a href="#cb8-216"></a></span>
-<span id="cb8-217"><a href="#cb8-217"></a>Examine the new column, <span class="in">`is_anaomalous`</span>, to get an idea of the target frequency.</span>
-<span id="cb8-218"><a href="#cb8-218"></a></span>
-<span id="cb8-221"><a href="#cb8-221"></a><span class="in">```{python}</span></span>
-<span id="cb8-222"><a href="#cb8-222"></a><span class="co">#| label: countplot-anomalous</span></span>
-<span id="cb8-223"><a href="#cb8-223"></a><span class="co">#| echo: false</span></span>
-<span id="cb8-224"><a href="#cb8-224"></a><span class="co">#| message: false</span></span>
-<span id="cb8-225"><a href="#cb8-225"></a><span class="co">#| warning: false</span></span>
-<span id="cb8-226"><a href="#cb8-226"></a></span>
-<span id="cb8-227"><a href="#cb8-227"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">5</span>))</span>
-<span id="cb8-228"><a href="#cb8-228"></a></span>
-<span id="cb8-229"><a href="#cb8-229"></a>ax <span class="op">=</span> sns.countplot(x <span class="op">=</span> <span class="st">&#39;is_anomalous&#39;</span>, </span>
-<span id="cb8-230"><a href="#cb8-230"></a>                   data <span class="op">=</span> df_train, </span>
-<span id="cb8-231"><a href="#cb8-231"></a>                   palette <span class="op">=</span> <span class="st">&quot;Set2&quot;</span>, </span>
-<span id="cb8-232"><a href="#cb8-232"></a>                   hue <span class="op">=</span> <span class="st">&quot;is_anomalous&quot;</span></span>
-<span id="cb8-233"><a href="#cb8-233"></a>                  )</span>
-<span id="cb8-234"><a href="#cb8-234"></a>plt.xticks([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="st">&#39;Normal (0)&#39;</span>, <span class="st">&#39;Anomalous (1)&#39;</span>])</span>
-<span id="cb8-235"><a href="#cb8-235"></a>plt.xlabel(<span class="st">&#39;Network Traffic Type&#39;</span>)</span>
-<span id="cb8-236"><a href="#cb8-236"></a>plt.ylabel(<span class="st">&#39;Count&#39;</span>)</span>
-<span id="cb8-237"><a href="#cb8-237"></a>plt.title(<span class="st">&#39;Normal vs Anomalous Network Traffic in Training Data&#39;</span>)</span>
-<span id="cb8-238"><a href="#cb8-238"></a></span>
-<span id="cb8-239"><a href="#cb8-239"></a>ax.legend_.remove()</span>
-<span id="cb8-240"><a href="#cb8-240"></a>ax.grid(<span class="va">False</span>, axis <span class="op">=</span> <span class="st">&#39;y&#39;</span>)</span>
-<span id="cb8-241"><a href="#cb8-241"></a></span>
-<span id="cb8-242"><a href="#cb8-242"></a>plt.tight_layout()</span>
-<span id="cb8-243"><a href="#cb8-243"></a>plt.show()</span>
-<span id="cb8-244"><a href="#cb8-244"></a></span>
-<span id="cb8-245"><a href="#cb8-245"></a><span class="co"># Create summary table for is_anomalous</span></span>
-<span id="cb8-246"><a href="#cb8-246"></a>value_counts <span class="op">=</span> df_train[<span class="st">&quot;is_anomalous&quot;</span>].value_counts()</span>
-<span id="cb8-247"><a href="#cb8-247"></a>percentages <span class="op">=</span> (value_counts <span class="op">/</span> value_counts.<span class="bu">sum</span>()) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb8-248"><a href="#cb8-248"></a></span>
-<span id="cb8-249"><a href="#cb8-249"></a>summary_table <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb8-250"><a href="#cb8-250"></a>    <span class="st">&quot;Count&quot;</span>: value_counts,</span>
-<span id="cb8-251"><a href="#cb8-251"></a>    <span class="st">&quot;Percentage&quot;</span>: percentages.<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb8-252"><a href="#cb8-252"></a>}).rename(index<span class="op">=</span>{<span class="dv">0</span>: <span class="st">&quot;Normal&quot;</span>, <span class="dv">1</span>: <span class="st">&quot;Attack&quot;</span>})</span>
-<span id="cb8-253"><a href="#cb8-253"></a></span>
-<span id="cb8-254"><a href="#cb8-254"></a>summary_table</span>
-<span id="cb8-255"><a href="#cb8-255"></a><span class="in">```</span></span>
-<span id="cb8-256"><a href="#cb8-256"></a></span>
-<span id="cb8-257"><a href="#cb8-257"></a>The <span class="in">`is_anomalous`</span> classification target shows a near-even class distribution indicating the the dataset is well balanced. There should be no need for resampling or class weighting to correct the set. It appears this dataset will be a good candidate for learning models.</span>
-<span id="cb8-258"><a href="#cb8-258"></a></span>
-<span id="cb8-259"><a href="#cb8-259"></a><span class="fu">## Analysis plan</span></span>
-<span id="cb8-260"><a href="#cb8-260"></a></span>
-<span id="cb8-261"><a href="#cb8-261"></a><span class="fu">### Problem Introduction</span></span>
-<span id="cb8-262"><a href="#cb8-262"></a></span>
-<span id="cb8-263"><a href="#cb8-263"></a>The project is to build and evaluate models capable of detecting anomalous network traffic based on connection-level features from the NSL-KDD dataset. The problem is framed as a binary classification task, where each record is labeled as either normal or anomalous. This has real-world applications in intrusion detection systems and network security monitoring.</span>
-<span id="cb8-264"><a href="#cb8-264"></a></span>
-<span id="cb8-265"><a href="#cb8-265"></a>The project will explore both supervised and unsupervised machine learning techniques to assess their effectiveness in identifying attacks from structured network traffic data.</span>
-<span id="cb8-266"><a href="#cb8-266"></a></span>
-<span id="cb8-267"><a href="#cb8-267"></a><span class="fu">### Feature Engineering Strategy</span></span>
-<span id="cb8-268"><a href="#cb8-268"></a></span>
-<span id="cb8-269"><a href="#cb8-269"></a>To ensure a fair and consistent comparison, we will apply the same feature engineering pipeline to both supervised and unsupervised models. All features will be assigned appropriate column names based on the NSL-KDD documentation. Categorical variables such as protocol_type, service, and flag will be one-hot encoded, and low-variance or non-informative columns will be removed. Numeric features will be standardized using a scaler to normalize their ranges.</span>
-<span id="cb8-270"><a href="#cb8-270"></a></span>
-<span id="cb8-271"><a href="#cb8-271"></a>For supervised models, these engineered features will be used alongside the binary target is_anomalous. For unsupervised models, the same processed features will be used without labels, allowing the models to explore underlying structure or detect anomalous patterns. This consistent preprocessing ensures that differences in performance can be attributed to the modeling approaches rather than inconsistencies in data preparation.</span>
-<span id="cb8-272"><a href="#cb8-272"></a></span>
-<span id="cb8-273"><a href="#cb8-273"></a><span class="fu">### Dimensionality Reduction</span></span>
-<span id="cb8-274"><a href="#cb8-274"></a></span>
-<span id="cb8-275"><a href="#cb8-275"></a>Our dataset currently has over 40 features, we will apply a combination of feature reduction techniques such as Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA), or even use the Random Forest Classifier feature importance attribute. We&#39;ll experiment to determine the most optimal feature subset for our classification task.</span>
-<span id="cb8-276"><a href="#cb8-276"></a></span>
-<span id="cb8-277"><a href="#cb8-277"></a><span class="fu">### Q1. Supervised Learning</span></span>
-<span id="cb8-278"><a href="#cb8-278"></a></span>
-<span id="cb8-279"><a href="#cb8-279"></a>For the supervised learning portion of the project, we will train and evaluate models using the labeled NSL-KDD dataset to classify network traffic as normal or anomalous. Specifically, we will implement and compare a Long Short-Term Memory (LSTM) neural network and a Support Vector Machine (SVM). These models will be trained on the same feature-engineered data, using the is_anomalous column as the target. Model performance will be assessed using standard classification metrics, including accuracy, precision, recall, F1-score, and ROC AUC.</span>
-<span id="cb8-280"><a href="#cb8-280"></a></span>
-<span id="cb8-281"><a href="#cb8-281"></a><span class="fu">### Q2. Unsupervised Learning</span></span>
-<span id="cb8-282"><a href="#cb8-282"></a></span>
-<span id="cb8-283"><a href="#cb8-283"></a>For the unsupervised learning portion of the project, we will explore clustering-based approaches to detect anomalies in network traffic without relying on labeled data. We plan to experiment with techniques such as K-Means and DBSCAN to group similar observations and identify outliers that may correspond to attacks. After clustering, we will evaluate how well the resulting groupings align with the true labels using appropriate metrics for unsupervised learning. This will help us assess the potential of unsupervised models to detect anomalous behavior in the absence of supervision.</span>
-<span id="cb8-284"><a href="#cb8-284"></a></span>
-<span id="cb8-285"><a href="#cb8-285"></a><span class="fu">### Summary Comparison</span></span>
-<span id="cb8-286"><a href="#cb8-286"></a></span>
-<span id="cb8-287"><a href="#cb8-287"></a>To compare the supervised and unsupervised approaches, we will evaluate their ability to correctly identify anomalous traffic using relevant metrics for each method. We will also consider practical factors such as interpretability, scalability, and the need for labeled data.</span>
-<span id="cb8-288"><a href="#cb8-288"></a></span>
-<span id="cb8-289"><a href="#cb8-289"></a><span class="fu">### Project Timeline</span></span>
-<span id="cb8-290"><a href="#cb8-290"></a></span>
-<span id="cb8-291"><a href="#cb8-291"></a><span class="pp">|</span> Task Name <span class="pp">|</span> Status <span class="pp">|</span> Due <span class="pp">|</span> Priority <span class="pp">|</span> Summary <span class="pp">|</span></span>
-<span id="cb8-292"><a href="#cb8-292"></a><span class="pp">|-------------|-------------|-------------|-------------|-----------------------|</span></span>
-<span id="cb8-293"><a href="#cb8-293"></a><span class="pp">|</span> Dataset exploration <span class="pp">|</span> In Progress <span class="pp">|</span> Week 1 <span class="pp">|</span> High <span class="pp">|</span> Load the dataset, inspect features, handle any preprocessing needs. <span class="pp">|</span></span>
-<span id="cb8-294"><a href="#cb8-294"></a><span class="pp">|</span> Define research questions <span class="pp">|</span> Complete <span class="pp">|</span> Week 1 <span class="pp">|</span> High <span class="pp">|</span> Clarify goals for supervised and unsupervised anomaly detection. <span class="pp">|</span></span>
-<span id="cb8-295"><a href="#cb8-295"></a><span class="pp">|</span> Supervised model development <span class="pp">|</span> Not Started <span class="pp">|</span> Week 2 <span class="pp">|</span> High <span class="pp">|</span> Train models like Random Forest, Logistic Regression, and XGBoost. <span class="pp">|</span></span>
-<span id="cb8-296"><a href="#cb8-296"></a><span class="pp">|</span> Evaluation of supervised models <span class="pp">|</span> Not Started <span class="pp">|</span> Week 3 <span class="pp">|</span> High <span class="pp">|</span> Use accuracy, precision, recall, F₁, and ROC-AUC to assess performance. <span class="pp">|</span></span>
-<span id="cb8-297"><a href="#cb8-297"></a><span class="pp">|</span> Unsupervised model development <span class="pp">|</span> Not Started <span class="pp">|</span> Week 3 <span class="pp">|</span> Medium <span class="pp">|</span> Explore methods like Isolation Forest and clustering. <span class="pp">|</span></span>
-<span id="cb8-298"><a href="#cb8-298"></a><span class="pp">|</span> Evaluation of unsupervised models <span class="pp">|</span> Not Started <span class="pp">|</span> Week 4 <span class="pp">|</span> Medium <span class="pp">|</span> Compare anomaly scores to labeled data using precision-recall metrics. <span class="pp">|</span></span>
-<span id="cb8-299"><a href="#cb8-299"></a><span class="pp">|</span> Comparative analysis <span class="pp">|</span> Not Started <span class="pp">|</span> Week 4 <span class="pp">|</span> High <span class="pp">|</span> Analyze strengths and weaknesses of both approaches. <span class="pp">|</span></span>
-<span id="cb8-300"><a href="#cb8-300"></a><span class="pp">|</span> Final report &amp; presentation <span class="pp">|</span> Not Started <span class="pp">|</span> Week 5 <span class="pp">|</span> High <span class="pp">|</span> Compile results, figures, and discussion into final deliverables. <span class="pp">|</span></span>
+<span id="cb8-73"><a href="#cb8-73"></a><span class="bu">print</span>(<span class="st">&#39;Shapes (train, test):&#39;</span>, df_train.shape, df_test.shape)</span>
+<span id="cb8-74"><a href="#cb8-74"></a><span class="in">```</span></span>
+<span id="cb8-75"><a href="#cb8-75"></a></span>
+<span id="cb8-76"><a href="#cb8-76"></a>We are using a training and testing dataset of network intrusion detection from <span class="co">[</span><span class="ot">NSL-KDD from Kaggle</span><span class="co">](https://www.kaggle.com/datasets/hassan06/nslkdd/data?select=KDDTrain1.jpg)</span>. The intrusion detection network traffic training dataset contains **125,972 rows** and **43 columns**, and **22,543 rows** and **43 columns** in the test dataset.</span>
+<span id="cb8-77"><a href="#cb8-77"></a></span>
+<span id="cb8-78"><a href="#cb8-78"></a>The <span class="in">`attack`</span> field indicates normal or anomalous (multi-class) observations which allows us to use learning approaches for classifying anomalous network activity. A new binary classification feature, <span class="in">`is_anomalous`</span>, will be added to indicate if the network connection was anomalous or not. This will be the target field for the project.</span>
+<span id="cb8-79"><a href="#cb8-79"></a></span>
+<span id="cb8-80"><a href="#cb8-80"></a>We chose this dataset because it provides a rich and realistic representation of network traffic data. The presence of labeled data allows us to train and evaluate supervised models; the diversity and volume of traffic patterns make it well-suited for exploring unsupervised anomaly detection techniques as well. This balance between complexity and feature richness aligns well with our research questions and modeling goals.</span>
+<span id="cb8-81"><a href="#cb8-81"></a></span>
+<span id="cb8-82"><a href="#cb8-82"></a><span class="fu">## Questions</span></span>
+<span id="cb8-83"><a href="#cb8-83"></a></span>
+<span id="cb8-84"><a href="#cb8-84"></a>Q1. Using supervised machine learning models such as Long Short-Term Memory (LSTM) and Support Vector Machines (SVMs), can we accurately calssify network traffic as normal and anomalous based on labeled data? How do their performances compare in terms of accuracy, precision, recall, and F1-score?</span>
+<span id="cb8-85"><a href="#cb8-85"></a></span>
+<span id="cb8-86"><a href="#cb8-86"></a>Q2. Can unsupervised learning methods such as K-Means Clustering and Density-Based Clustering (DBSCAN) detect anomalous patterns in network traffic without using labeled data?</span>
+<span id="cb8-87"><a href="#cb8-87"></a></span>
+<span id="cb8-88"><a href="#cb8-88"></a>Summary. How do the supervised and unsupervised approaches compare?</span>
+<span id="cb8-89"><a href="#cb8-89"></a></span>
+<span id="cb8-90"><a href="#cb8-90"></a><span class="fu">## Dataset Analysis</span></span>
+<span id="cb8-91"><a href="#cb8-91"></a></span>
+<span id="cb8-92"><a href="#cb8-92"></a><span class="fu">### Variables</span></span>
+<span id="cb8-93"><a href="#cb8-93"></a></span>
+<span id="cb8-94"><a href="#cb8-94"></a><span class="pp">|</span> Column Name <span class="pp">|</span> Data Type <span class="pp">|</span> Description <span class="pp">|</span></span>
+<span id="cb8-95"><a href="#cb8-95"></a><span class="pp">|---------------|---------------|-------------------------------------------|</span></span>
+<span id="cb8-96"><a href="#cb8-96"></a><span class="pp">|</span> <span class="in">`duration`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Length (in seconds) of the connection. <span class="pp">|</span></span>
+<span id="cb8-97"><a href="#cb8-97"></a><span class="pp">|</span> <span class="in">`protocol_type`</span> <span class="pp">|</span> object <span class="pp">|</span> Protocol used (e.g., tcp, udp, icmp). <span class="pp">|</span></span>
+<span id="cb8-98"><a href="#cb8-98"></a><span class="pp">|</span> <span class="in">`service`</span> <span class="pp">|</span> object <span class="pp">|</span> Network service on the destination (e.g., http, telnet). <span class="pp">|</span></span>
+<span id="cb8-99"><a href="#cb8-99"></a><span class="pp">|</span> <span class="in">`flag`</span> <span class="pp">|</span> object <span class="pp">|</span> Status flag of the connection. <span class="pp">|</span></span>
+<span id="cb8-100"><a href="#cb8-100"></a><span class="pp">|</span> <span class="in">`src_bytes`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of data bytes sent from source to destination. <span class="pp">|</span></span>
+<span id="cb8-101"><a href="#cb8-101"></a><span class="pp">|</span> <span class="in">`dst_bytes`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of data bytes sent from destination to source. <span class="pp">|</span></span>
+<span id="cb8-102"><a href="#cb8-102"></a><span class="pp">|</span> <span class="in">`land`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if connection is from/to the same host/port; 0 otherwise. <span class="pp">|</span></span>
+<span id="cb8-103"><a href="#cb8-103"></a><span class="pp">|</span> <span class="in">`wrong_fragment`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of wrong fragments. <span class="pp">|</span></span>
+<span id="cb8-104"><a href="#cb8-104"></a><span class="pp">|</span> <span class="in">`urgent`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of urgent packets. <span class="pp">|</span></span>
+<span id="cb8-105"><a href="#cb8-105"></a><span class="pp">|</span> <span class="in">`hot`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of &quot;hot&quot; indicators. <span class="pp">|</span></span>
+<span id="cb8-106"><a href="#cb8-106"></a><span class="pp">|</span> <span class="in">`num_failed_logins`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of failed login attempts. <span class="pp">|</span></span>
+<span id="cb8-107"><a href="#cb8-107"></a><span class="pp">|</span> <span class="in">`logged_in`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if successfully logged in; 0 otherwise. <span class="pp">|</span></span>
+<span id="cb8-108"><a href="#cb8-108"></a><span class="pp">|</span> <span class="in">`num_compromised`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of compromised conditions. <span class="pp">|</span></span>
+<span id="cb8-109"><a href="#cb8-109"></a><span class="pp">|</span> <span class="in">`root_shell`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if root shell is obtained; 0 otherwise. <span class="pp">|</span></span>
+<span id="cb8-110"><a href="#cb8-110"></a><span class="pp">|</span> <span class="in">`su_attempted`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if &quot;su root&quot; command attempted; 0 otherwise. <span class="pp">|</span></span>
+<span id="cb8-111"><a href="#cb8-111"></a><span class="pp">|</span> <span class="in">`num_root`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of &quot;root&quot; accesses. <span class="pp">|</span></span>
+<span id="cb8-112"><a href="#cb8-112"></a><span class="pp">|</span> <span class="in">`num_file_creations`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of file creation operations. <span class="pp">|</span></span>
+<span id="cb8-113"><a href="#cb8-113"></a><span class="pp">|</span> <span class="in">`num_shells`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of shell prompts invoked. <span class="pp">|</span></span>
+<span id="cb8-114"><a href="#cb8-114"></a><span class="pp">|</span> <span class="in">`num_access_files`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of accesses to control files. <span class="pp">|</span></span>
+<span id="cb8-115"><a href="#cb8-115"></a><span class="pp">|</span> <span class="in">`num_outbound_cmds`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of outbound commands (always 0 in KDD99). <span class="pp">|</span></span>
+<span id="cb8-116"><a href="#cb8-116"></a><span class="pp">|</span> <span class="in">`is_host_login`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if login is to a host account; 0 otherwise. <span class="pp">|</span></span>
+<span id="cb8-117"><a href="#cb8-117"></a><span class="pp">|</span> <span class="in">`is_guest_login`</span> <span class="pp">|</span> int64 <span class="pp">|</span> 1 if login is to a guest account; 0 otherwise. <span class="pp">|</span></span>
+<span id="cb8-118"><a href="#cb8-118"></a><span class="pp">|</span> <span class="in">`count`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of connections to the same host in the past 2 seconds. <span class="pp">|</span></span>
+<span id="cb8-119"><a href="#cb8-119"></a><span class="pp">|</span> <span class="in">`srv_count`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of connections to the same service in the past 2 seconds. <span class="pp">|</span></span>
+<span id="cb8-120"><a href="#cb8-120"></a><span class="pp">|</span> <span class="in">`serror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with SYN errors. <span class="pp">|</span></span>
+<span id="cb8-121"><a href="#cb8-121"></a><span class="pp">|</span> <span class="in">`srv_serror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service with SYN errors. <span class="pp">|</span></span>
+<span id="cb8-122"><a href="#cb8-122"></a><span class="pp">|</span> <span class="in">`rerror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with REJ errors. <span class="pp">|</span></span>
+<span id="cb8-123"><a href="#cb8-123"></a><span class="pp">|</span> <span class="in">`srv_rerror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service with REJ errors. <span class="pp">|</span></span>
+<span id="cb8-124"><a href="#cb8-124"></a><span class="pp">|</span> <span class="in">`same_srv_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service. <span class="pp">|</span></span>
+<span id="cb8-125"><a href="#cb8-125"></a><span class="pp">|</span> <span class="in">`diff_srv_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to different services. <span class="pp">|</span></span>
+<span id="cb8-126"><a href="#cb8-126"></a><span class="pp">|</span> <span class="in">`srv_diff_host_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to different hosts on the same service. <span class="pp">|</span></span>
+<span id="cb8-127"><a href="#cb8-127"></a><span class="pp">|</span> <span class="in">`dst_host_count`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of connections to the destination host. <span class="pp">|</span></span>
+<span id="cb8-128"><a href="#cb8-128"></a><span class="pp">|</span> <span class="in">`dst_host_srv_count`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Number of connections to the destination host and service. <span class="pp">|</span></span>
+<span id="cb8-129"><a href="#cb8-129"></a><span class="pp">|</span> <span class="in">`dst_host_same_srv_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service on the destination host. <span class="pp">|</span></span>
+<span id="cb8-130"><a href="#cb8-130"></a><span class="pp">|</span> <span class="in">`dst_host_diff_srv_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to different services on the destination host. <span class="pp">|</span></span>
+<span id="cb8-131"><a href="#cb8-131"></a><span class="pp">|</span> <span class="in">`dst_host_same_src_port_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections from the same source port. <span class="pp">|</span></span>
+<span id="cb8-132"><a href="#cb8-132"></a><span class="pp">|</span> <span class="in">`dst_host_srv_diff_host_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections to the same service from different hosts. <span class="pp">|</span></span>
+<span id="cb8-133"><a href="#cb8-133"></a><span class="pp">|</span> <span class="in">`dst_host_serror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with SYN errors to the destination host. <span class="pp">|</span></span>
+<span id="cb8-134"><a href="#cb8-134"></a><span class="pp">|</span> <span class="in">`dst_host_srv_serror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with SYN errors to the destination service. <span class="pp">|</span></span>
+<span id="cb8-135"><a href="#cb8-135"></a><span class="pp">|</span> <span class="in">`dst_host_rerror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with REJ errors to the destination host. <span class="pp">|</span></span>
+<span id="cb8-136"><a href="#cb8-136"></a><span class="pp">|</span> <span class="in">`dst_host_srv_rerror_rate`</span> <span class="pp">|</span> float64 <span class="pp">|</span> \% of connections with REJ errors to the destination service. <span class="pp">|</span></span>
+<span id="cb8-137"><a href="#cb8-137"></a><span class="pp">|</span> <span class="in">`attack`</span> <span class="pp">|</span> object <span class="pp">|</span> Label indicating the type of attack or &quot;normal&quot;. <span class="pp">|</span></span>
+<span id="cb8-138"><a href="#cb8-138"></a><span class="pp">|</span> <span class="in">`level`</span> <span class="pp">|</span> int64 <span class="pp">|</span> Severity or confidence score of the attack (if available). <span class="pp">|</span></span>
+<span id="cb8-139"><a href="#cb8-139"></a></span>
+<span id="cb8-140"><a href="#cb8-140"></a><span class="fu">### Exploratory Data Analysis</span></span>
+<span id="cb8-141"><a href="#cb8-141"></a></span>
+<span id="cb8-142"><a href="#cb8-142"></a>We take a quick look at the training data to see if there are any obvious imbalances.</span>
+<span id="cb8-143"><a href="#cb8-143"></a></span>
+<span id="cb8-146"><a href="#cb8-146"></a><span class="in">```{python}</span></span>
+<span id="cb8-147"><a href="#cb8-147"></a><span class="co">#| label: Exploratory Data Analysis</span></span>
+<span id="cb8-148"><a href="#cb8-148"></a><span class="bu">print</span>(<span class="st">&quot;Shape:&quot;</span>, df_train.shape)</span>
+<span id="cb8-149"><a href="#cb8-149"></a><span class="bu">print</span>(<span class="st">&quot;Missing values:&quot;</span>, df_train.isna().<span class="bu">sum</span>().<span class="bu">sum</span>())</span>
+<span id="cb8-150"><a href="#cb8-150"></a><span class="bu">print</span>(<span class="st">&quot;Duplicates:&quot;</span>, df_train.duplicated().<span class="bu">sum</span>())</span>
+<span id="cb8-151"><a href="#cb8-151"></a><span class="bu">print</span>(<span class="st">&quot;Unique attack labels:&quot;</span>, df_train[<span class="st">&#39;attack&#39;</span>].nunique())</span>
+<span id="cb8-152"><a href="#cb8-152"></a><span class="bu">print</span>(<span class="st">&quot;Attack label distribution:</span><span class="ch">\n</span><span class="st">&quot;</span>, df_train[<span class="st">&#39;attack&#39;</span>].value_counts().head(<span class="dv">5</span>))</span>
+<span id="cb8-153"><a href="#cb8-153"></a></span>
+<span id="cb8-154"><a href="#cb8-154"></a><span class="co"># Show types and non-null counts</span></span>
+<span id="cb8-155"><a href="#cb8-155"></a>df_train.info(verbose<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb8-156"><a href="#cb8-156"></a><span class="in">```</span></span>
+<span id="cb8-157"><a href="#cb8-157"></a></span>
+<span id="cb8-158"><a href="#cb8-158"></a>The brief look at the data is positive. There are plenty of data points and features. Depending on time and model fitting speed, we may decrease our sample size, as hyperparameter tuning using GridSearchCV can be time-intensive. There are no missing values, and the glimpse of the attack column provides insight into why we want to collapse it into a binary column.</span>
+<span id="cb8-159"><a href="#cb8-159"></a></span>
+<span id="cb8-160"><a href="#cb8-160"></a><span class="fu">### Normal vs Anomalous Traffic</span></span>
+<span id="cb8-161"><a href="#cb8-161"></a></span>
+<span id="cb8-162"><a href="#cb8-162"></a>First, look at the amount of normal v. anomalous data.</span>
+<span id="cb8-163"><a href="#cb8-163"></a></span>
+<span id="cb8-166"><a href="#cb8-166"></a><span class="in">```{python}</span></span>
+<span id="cb8-167"><a href="#cb8-167"></a><span class="co">#| label: class-distribution</span></span>
+<span id="cb8-168"><a href="#cb8-168"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-169"><a href="#cb8-169"></a><span class="co">#| message: false</span></span>
+<span id="cb8-170"><a href="#cb8-170"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-171"><a href="#cb8-171"></a></span>
+<span id="cb8-172"><a href="#cb8-172"></a><span class="co"># plot style</span></span>
+<span id="cb8-173"><a href="#cb8-173"></a>sns.<span class="bu">set</span>(style<span class="op">=</span><span class="st">&quot;whitegrid&quot;</span>)</span>
+<span id="cb8-174"><a href="#cb8-174"></a></span>
+<span id="cb8-175"><a href="#cb8-175"></a><span class="co"># Gtop 10 attack types</span></span>
+<span id="cb8-176"><a href="#cb8-176"></a>top_10_attacks <span class="op">=</span> df_train[<span class="st">&#39;attack&#39;</span>].value_counts().head(<span class="dv">10</span>).index</span>
+<span id="cb8-177"><a href="#cb8-177"></a></span>
+<span id="cb8-178"><a href="#cb8-178"></a><span class="co"># plot</span></span>
+<span id="cb8-179"><a href="#cb8-179"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb8-180"><a href="#cb8-180"></a>sns.countplot(</span>
+<span id="cb8-181"><a href="#cb8-181"></a>    data<span class="op">=</span>df_train[df_train[<span class="st">&#39;attack&#39;</span>].isin(top_10_attacks)],</span>
+<span id="cb8-182"><a href="#cb8-182"></a>    x<span class="op">=</span><span class="st">&quot;attack&quot;</span>,</span>
+<span id="cb8-183"><a href="#cb8-183"></a>    hue<span class="op">=</span><span class="st">&quot;attack&quot;</span>,</span>
+<span id="cb8-184"><a href="#cb8-184"></a>    palette<span class="op">=</span><span class="st">&quot;Set2&quot;</span>,</span>
+<span id="cb8-185"><a href="#cb8-185"></a>    order<span class="op">=</span>top_10_attacks</span>
+<span id="cb8-186"><a href="#cb8-186"></a>)</span>
+<span id="cb8-187"><a href="#cb8-187"></a></span>
+<span id="cb8-188"><a href="#cb8-188"></a>plt.title(<span class="st">&quot;Top 10 Attack Types in Training Data&quot;</span>)</span>
+<span id="cb8-189"><a href="#cb8-189"></a>plt.xlabel(<span class="st">&quot;Attack Type&quot;</span>)</span>
+<span id="cb8-190"><a href="#cb8-190"></a>plt.ylabel(<span class="st">&quot;Count&quot;</span>)</span>
+<span id="cb8-191"><a href="#cb8-191"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb8-192"><a href="#cb8-192"></a></span>
+<span id="cb8-193"><a href="#cb8-193"></a>plt.tight_layout()</span>
+<span id="cb8-194"><a href="#cb8-194"></a>plt.show()</span>
+<span id="cb8-195"><a href="#cb8-195"></a></span>
+<span id="cb8-196"><a href="#cb8-196"></a><span class="co"># Print the full frequency table</span></span>
+<span id="cb8-197"><a href="#cb8-197"></a><span class="bu">print</span>(df_train[<span class="st">&#39;attack&#39;</span>].value_counts())</span>
+<span id="cb8-198"><a href="#cb8-198"></a></span>
+<span id="cb8-199"><a href="#cb8-199"></a><span class="in">```</span></span>
+<span id="cb8-200"><a href="#cb8-200"></a></span>
+<span id="cb8-201"><a href="#cb8-201"></a>The plot provides an idea of the specific attack types expressesd in the data. The plot communicates why it makes sense to group all non-normal traffic together.</span>
+<span id="cb8-202"><a href="#cb8-202"></a></span>
+<span id="cb8-203"><a href="#cb8-203"></a>We feature engineer a new column, <span class="in">`is_anomalous`</span>, this contains 0 if the connection is normal and 1 if the connection is not normal.</span>
+<span id="cb8-204"><a href="#cb8-204"></a></span>
+<span id="cb8-207"><a href="#cb8-207"></a><span class="in">```{python}</span></span>
+<span id="cb8-208"><a href="#cb8-208"></a><span class="co">#| label: feature-engineering</span></span>
+<span id="cb8-209"><a href="#cb8-209"></a><span class="co"># create binary target column: 1 = attack, 0 = normal</span></span>
+<span id="cb8-210"><a href="#cb8-210"></a></span>
+<span id="cb8-211"><a href="#cb8-211"></a>df_train[<span class="st">&#39;is_anomalous&#39;</span>] <span class="op">=</span> df_train[<span class="st">&#39;attack&#39;</span>].<span class="bu">apply</span>(</span>
+<span id="cb8-212"><a href="#cb8-212"></a>  <span class="kw">lambda</span> x: <span class="dv">0</span> <span class="cf">if</span> x <span class="op">==</span> <span class="st">&#39;normal&#39;</span> <span class="cf">else</span> <span class="dv">1</span>)</span>
+<span id="cb8-213"><a href="#cb8-213"></a></span>
+<span id="cb8-214"><a href="#cb8-214"></a><span class="in">```</span></span>
+<span id="cb8-215"><a href="#cb8-215"></a></span>
+<span id="cb8-216"><a href="#cb8-216"></a>Examine the new column, <span class="in">`is_anaomalous`</span>, to get an idea of the target frequency.</span>
+<span id="cb8-217"><a href="#cb8-217"></a></span>
+<span id="cb8-220"><a href="#cb8-220"></a><span class="in">```{python}</span></span>
+<span id="cb8-221"><a href="#cb8-221"></a><span class="co">#| label: countplot-anomalous</span></span>
+<span id="cb8-222"><a href="#cb8-222"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-223"><a href="#cb8-223"></a><span class="co">#| message: false</span></span>
+<span id="cb8-224"><a href="#cb8-224"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-225"><a href="#cb8-225"></a></span>
+<span id="cb8-226"><a href="#cb8-226"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb8-227"><a href="#cb8-227"></a></span>
+<span id="cb8-228"><a href="#cb8-228"></a>ax <span class="op">=</span> sns.countplot(x <span class="op">=</span> <span class="st">&#39;is_anomalous&#39;</span>, </span>
+<span id="cb8-229"><a href="#cb8-229"></a>                   data <span class="op">=</span> df_train, </span>
+<span id="cb8-230"><a href="#cb8-230"></a>                   palette <span class="op">=</span> <span class="st">&quot;Set2&quot;</span>, </span>
+<span id="cb8-231"><a href="#cb8-231"></a>                   hue <span class="op">=</span> <span class="st">&quot;is_anomalous&quot;</span></span>
+<span id="cb8-232"><a href="#cb8-232"></a>                  )</span>
+<span id="cb8-233"><a href="#cb8-233"></a>plt.xticks([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="st">&#39;Normal (0)&#39;</span>, <span class="st">&#39;Anomalous (1)&#39;</span>])</span>
+<span id="cb8-234"><a href="#cb8-234"></a>plt.xlabel(<span class="st">&#39;Network Traffic Type&#39;</span>)</span>
+<span id="cb8-235"><a href="#cb8-235"></a>plt.ylabel(<span class="st">&#39;Count&#39;</span>)</span>
+<span id="cb8-236"><a href="#cb8-236"></a>plt.title(<span class="st">&#39;Normal vs Anomalous Network Traffic in Training Data&#39;</span>)</span>
+<span id="cb8-237"><a href="#cb8-237"></a></span>
+<span id="cb8-238"><a href="#cb8-238"></a>ax.legend_.remove()</span>
+<span id="cb8-239"><a href="#cb8-239"></a>ax.grid(<span class="va">False</span>, axis <span class="op">=</span> <span class="st">&#39;y&#39;</span>)</span>
+<span id="cb8-240"><a href="#cb8-240"></a></span>
+<span id="cb8-241"><a href="#cb8-241"></a>plt.tight_layout()</span>
+<span id="cb8-242"><a href="#cb8-242"></a>plt.show()</span>
+<span id="cb8-243"><a href="#cb8-243"></a></span>
+<span id="cb8-244"><a href="#cb8-244"></a><span class="co"># Create summary table for is_anomalous</span></span>
+<span id="cb8-245"><a href="#cb8-245"></a>value_counts <span class="op">=</span> df_train[<span class="st">&quot;is_anomalous&quot;</span>].value_counts()</span>
+<span id="cb8-246"><a href="#cb8-246"></a>percentages <span class="op">=</span> (value_counts <span class="op">/</span> value_counts.<span class="bu">sum</span>()) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb8-247"><a href="#cb8-247"></a></span>
+<span id="cb8-248"><a href="#cb8-248"></a>summary_table <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb8-249"><a href="#cb8-249"></a>    <span class="st">&quot;Count&quot;</span>: value_counts,</span>
+<span id="cb8-250"><a href="#cb8-250"></a>    <span class="st">&quot;Percentage&quot;</span>: percentages.<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb8-251"><a href="#cb8-251"></a>}).rename(index<span class="op">=</span>{<span class="dv">0</span>: <span class="st">&quot;Normal&quot;</span>, <span class="dv">1</span>: <span class="st">&quot;Attack&quot;</span>})</span>
+<span id="cb8-252"><a href="#cb8-252"></a></span>
+<span id="cb8-253"><a href="#cb8-253"></a>summary_table</span>
+<span id="cb8-254"><a href="#cb8-254"></a><span class="in">```</span></span>
+<span id="cb8-255"><a href="#cb8-255"></a></span>
+<span id="cb8-256"><a href="#cb8-256"></a>The <span class="in">`is_anomalous`</span> classification target shows a near-even class distribution indicating the the dataset is well balanced. There should be no need for resampling or class weighting to correct the set. It appears this dataset will be a good candidate for learning models.</span>
+<span id="cb8-257"><a href="#cb8-257"></a></span>
+<span id="cb8-258"><a href="#cb8-258"></a><span class="fu">## Analysis plan</span></span>
+<span id="cb8-259"><a href="#cb8-259"></a></span>
+<span id="cb8-260"><a href="#cb8-260"></a><span class="fu">### Problem Introduction</span></span>
+<span id="cb8-261"><a href="#cb8-261"></a></span>
+<span id="cb8-262"><a href="#cb8-262"></a>The project is to build and evaluate models capable of detecting anomalous network traffic based on connection-level features from the NSL-KDD dataset. The problem is framed as a binary classification task, where each record is labeled as either normal or anomalous. This has real-world applications in intrusion detection systems and network security monitoring.</span>
+<span id="cb8-263"><a href="#cb8-263"></a></span>
+<span id="cb8-264"><a href="#cb8-264"></a>The project will explore both supervised and unsupervised machine learning techniques to assess their effectiveness in identifying attacks from structured network traffic data.</span>
+<span id="cb8-265"><a href="#cb8-265"></a></span>
+<span id="cb8-266"><a href="#cb8-266"></a><span class="fu">### Feature Engineering Strategy</span></span>
+<span id="cb8-267"><a href="#cb8-267"></a></span>
+<span id="cb8-268"><a href="#cb8-268"></a>To ensure a fair and consistent comparison, we will apply the same feature engineering pipeline to both supervised and unsupervised models. All features will be assigned appropriate column names based on the NSL-KDD documentation. Categorical variables such as protocol_type, service, and flag will be one-hot encoded, and low-variance or non-informative columns will be removed. Numeric features will be standardized using a scaler to normalize their ranges.</span>
+<span id="cb8-269"><a href="#cb8-269"></a></span>
+<span id="cb8-270"><a href="#cb8-270"></a>For supervised models, these engineered features will be used alongside the binary target is_anomalous. For unsupervised models, the same processed features will be used without labels, allowing the models to explore underlying structure or detect anomalous patterns. This consistent preprocessing ensures that differences in performance can be attributed to the modeling approaches rather than inconsistencies in data preparation.</span>
+<span id="cb8-271"><a href="#cb8-271"></a></span>
+<span id="cb8-272"><a href="#cb8-272"></a><span class="fu">### Dimensionality Reduction</span></span>
+<span id="cb8-273"><a href="#cb8-273"></a></span>
+<span id="cb8-274"><a href="#cb8-274"></a>Our dataset currently has over 40 features, we will apply a combination of feature reduction techniques such as Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA), or even use the Random Forest Classifier feature importance attribute. We&#39;ll experiment to determine the most optimal feature subset for our classification task.</span>
+<span id="cb8-275"><a href="#cb8-275"></a></span>
+<span id="cb8-276"><a href="#cb8-276"></a><span class="fu">### Q1. Supervised Learning</span></span>
+<span id="cb8-277"><a href="#cb8-277"></a></span>
+<span id="cb8-278"><a href="#cb8-278"></a>For the supervised learning portion of the project, we will train and evaluate models using the labeled NSL-KDD dataset to classify network traffic as normal or anomalous. Specifically, we will implement and compare a Long Short-Term Memory (LSTM) neural network and a Support Vector Machine (SVM). These models will be trained on the same feature-engineered data, using the is_anomalous column as the target. Model performance will be assessed using standard classification metrics, including accuracy, precision, recall, F1-score, and ROC AUC.</span>
+<span id="cb8-279"><a href="#cb8-279"></a></span>
+<span id="cb8-280"><a href="#cb8-280"></a><span class="fu">### Q2. Unsupervised Learning</span></span>
+<span id="cb8-281"><a href="#cb8-281"></a></span>
+<span id="cb8-282"><a href="#cb8-282"></a>For the unsupervised learning portion of the project, we will explore clustering-based approaches to detect anomalies in network traffic without relying on labeled data. We plan to experiment with techniques such as K-Means and DBSCAN to group similar observations and identify outliers that may correspond to attacks. After clustering, we will evaluate how well the resulting groupings align with the true labels using appropriate metrics for unsupervised learning. This will help us assess the potential of unsupervised models to detect anomalous behavior in the absence of supervision.</span>
+<span id="cb8-283"><a href="#cb8-283"></a></span>
+<span id="cb8-284"><a href="#cb8-284"></a><span class="fu">### Summary Comparison</span></span>
+<span id="cb8-285"><a href="#cb8-285"></a></span>
+<span id="cb8-286"><a href="#cb8-286"></a>To compare the supervised and unsupervised approaches, we will evaluate their ability to correctly identify anomalous traffic using relevant metrics for each method. We will also consider practical factors such as interpretability, scalability, and the need for labeled data.</span>
+<span id="cb8-287"><a href="#cb8-287"></a></span>
+<span id="cb8-288"><a href="#cb8-288"></a><span class="fu">### Project Timeline</span></span>
+<span id="cb8-289"><a href="#cb8-289"></a></span>
+<span id="cb8-290"><a href="#cb8-290"></a><span class="pp">|</span> Task Name <span class="pp">|</span> Status <span class="pp">|</span> Due <span class="pp">|</span> Priority <span class="pp">|</span> Summary <span class="pp">|</span></span>
+<span id="cb8-291"><a href="#cb8-291"></a><span class="pp">|-------------|-------------|-------------|-------------|-----------------------|</span></span>
+<span id="cb8-292"><a href="#cb8-292"></a><span class="pp">|</span> Dataset exploration <span class="pp">|</span> In Progress <span class="pp">|</span> Week 1 <span class="pp">|</span> High <span class="pp">|</span> Load the dataset, inspect features, handle any preprocessing needs. <span class="pp">|</span></span>
+<span id="cb8-293"><a href="#cb8-293"></a><span class="pp">|</span> Define research questions <span class="pp">|</span> Complete <span class="pp">|</span> Week 1 <span class="pp">|</span> High <span class="pp">|</span> Clarify goals for supervised and unsupervised anomaly detection. <span class="pp">|</span></span>
+<span id="cb8-294"><a href="#cb8-294"></a><span class="pp">|</span> Supervised model development <span class="pp">|</span> Not Started <span class="pp">|</span> Week 2 <span class="pp">|</span> High <span class="pp">|</span> Train models like Random Forest, Logistic Regression, and XGBoost. <span class="pp">|</span></span>
+<span id="cb8-295"><a href="#cb8-295"></a><span class="pp">|</span> Evaluation of supervised models <span class="pp">|</span> Not Started <span class="pp">|</span> Week 3 <span class="pp">|</span> High <span class="pp">|</span> Use accuracy, precision, recall, F₁, and ROC-AUC to assess performance. <span class="pp">|</span></span>
+<span id="cb8-296"><a href="#cb8-296"></a><span class="pp">|</span> Unsupervised model development <span class="pp">|</span> Not Started <span class="pp">|</span> Week 3 <span class="pp">|</span> Medium <span class="pp">|</span> Explore methods like Isolation Forest and clustering. <span class="pp">|</span></span>
+<span id="cb8-297"><a href="#cb8-297"></a><span class="pp">|</span> Evaluation of unsupervised models <span class="pp">|</span> Not Started <span class="pp">|</span> Week 4 <span class="pp">|</span> Medium <span class="pp">|</span> Compare anomaly scores to labeled data using precision-recall metrics. <span class="pp">|</span></span>
+<span id="cb8-298"><a href="#cb8-298"></a><span class="pp">|</span> Comparative analysis <span class="pp">|</span> Not Started <span class="pp">|</span> Week 4 <span class="pp">|</span> High <span class="pp">|</span> Analyze strengths and weaknesses of both approaches. <span class="pp">|</span></span>
+<span id="cb8-299"><a href="#cb8-299"></a><span class="pp">|</span> Final report &amp; presentation <span class="pp">|</span> Not Started <span class="pp">|</span> Week 5 <span class="pp">|</span> High <span class="pp">|</span> Compile results, figures, and discussion into final deliverables. <span class="pp">|</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
