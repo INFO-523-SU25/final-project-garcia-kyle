@@ -31,15 +31,14 @@ from scipy import stats # for analysis plan
 
 ## Dataset
 
+Our dataset doesn't include column names so we will add them to the in-memory dataframes.
+
 ```{python}
 #| label: load-dataset
 #| message: false
 
-network_traffic_train = pd.read_csv('data/KDDTrain.csv')
-network_traffic_test = pd.read_csv('data/KDDTest.csv')
-
-df_train = network_traffic_train.copy()
-df_test = network_traffic_test.copy()
+df_train = pd.read_csv('data/KDDTrain.csv')
+df_test = pd.read_csv('data/KDDTest.csv')
 
 '''
 Columns recieved from kaggle project 
@@ -150,7 +149,7 @@ print("Attack label distribution:\n", df_train['attack'].value_counts().head(5))
 df_train.info(verbose=False)
 ```
 
-The brief look at the data is positive. There are plenty of data points and features, depending on time speeds for fitting models, we may decrease our sample size because hyper parameter using GridSearchCV training may be time intensive. In the data there are no missing values, and the glimpse of the `attack` column provides insight into why we want to collapse it into a binary column.
+The brief look at the data is positive. There are plenty of data points and features. Depending on time and model fitting speed, we may decrease our sample size, as hyperparameter tuning using GridSearchCV can be time-intensive. There are no missing values, and the glimpse of the attack column provides insight into why we want to collapse it into a binary column.
 
 ### Normal vs Anomalous Traffic
 
