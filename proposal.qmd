@@ -77,11 +77,11 @@ We chose this dataset because it provides a rich and realistic representation of
 
 ## Questions
 
-Q1. Using supervised machine learning models such as Long Short-Term Memory (LSTM) and Support Vector Machines (SVMs), can we accurately calssify network traffic as normal and anomalous based on labeled data? How do their performances compare in terms of accuracy, precision, recall, and F1-score?
+Q1. Using a supervised learning model such as XGBoost, can we accurately classify network traffic as normal or anomalous? What features are most influential in driving the model's predictions?
 
-Q2. Can unsupervised learning methods such as K-Means Clustering and Density-Based Clustering (DBSCAN) detect anomalous patterns in network traffic without using labeled data?
+Q2. Can unsupervised learning methods such as K-Means and DBSCAN detect anomalous network traffic without labeled data? How do they group traffic, and which features appear to influence those groupings?
 
-Summary. How do the supervised and unsupervised approaches compare?
+Summary. In addition to evaluating the performance of supervised and unsupervised models on the task of anomaly detection, we compare the most influential features identified by each approach. This allows us to investigate how different learning paradigms "perceive" and prioritize threat indicators within the same dataset.
 
 ## Dataset Analysis
 
@@ -253,25 +253,30 @@ The project will explore both supervised and unsupervised machine learning techn
 
 ### Feature Engineering Strategy
 
-To ensure a fair and consistent comparison, we will apply the same feature engineering pipeline to both supervised and unsupervised models. All features will be assigned appropriate column names based on the NSL-KDD documentation. Categorical variables such as protocol_type, service, and flag will be one-hot encoded, and low-variance or non-informative columns will be removed. Numeric features will be standardized using a scaler to normalize their ranges.
+To ensure a fair and consistent comparison, we will apply the same feature engineering pipeline to both supervised and unsupervised models. All features will be assigned appropriate column names based on the NSL-KDD documentation. Categorical variables such as `protocol_type`, `service`, and `flag` will be one-hot encoded, and low-variance or non-informative columns will be removed. Numeric features will be standardized using a scaler to normalize their ranges.
 
-For supervised models, these engineered features will be used alongside the binary target is_anomalous. For unsupervised models, the same processed features will be used without labels, allowing the models to explore underlying structure or detect anomalous patterns. This consistent preprocessing ensures that differences in performance can be attributed to the modeling approaches rather than inconsistencies in data preparation.
+For supervised models, these engineered features will be used alongside the binary target `is_anomalous`. For unsupervised models, the same processed features will be used without labels, allowing the models to explore underlying structure or detect anomalous patterns. This consistent preprocessing ensures that differences in performance and feature relevance can be attributed to the modeling approaches rather than inconsistencies in data preparation.
 
 ### Dimensionality Reduction
 
-Our dataset currently has over 40 features, we will apply a combination of feature reduction techniques such as Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA), or even use the Random Forest Classifier feature importance attribute. We'll experiment to determine the most optimal feature subset for our classification task.
+Since the dataset contains over 40 features, we will apply dimensionality reduction techniques such as Principal Component Analysis (PCA) and Linear Discriminant Analysis (LDA) to aid in visualization, mitigate the curse of dimensionality, and potentially improve model performance. We will evaluate how reduced-dimensional representations affect clustering and classification results and determine whether retaining all features or selecting a subset leads to more interpretable and performant models.
 
 ### Q1. Supervised Learning
 
-For the supervised learning portion of the project, we will train and evaluate models using the labeled NSL-KDD dataset to classify network traffic as normal or anomalous. Specifically, we will implement and compare a Long Short-Term Memory (LSTM) neural network and a Support Vector Machine (SVM). These models will be trained on the same feature-engineered data, using the is_anomalous column as the target. Model performance will be assessed using standard classification metrics, including accuracy, precision, recall, F1-score, and ROC AUC.
+For the supervised learning portion of the project, we will use the labeled NSL-KDD dataset to train a model that classifies network traffic as normal or anomalous. We will implement XGBoost, a gradient-boosted decision tree algorithm known for its high accuracy, scalability, and built-in mechanisms for handling class imbalance. XGBoost is particularly well-suited for structured tabular data like NSL-KDD and provides useful feature importance measures that support model interpretation.
+
+Model performance will be evaluated using standard classification metrics, including accuracy, precision, recall, F1-score, and ROC AUC. In addition to assessing predictive performance, we will analyze the most influential features identified by the model to better understand what drives the classification of anomalous behavior.
 
 ### Q2. Unsupervised Learning
 
-For the unsupervised learning portion of the project, we will explore clustering-based approaches to detect anomalies in network traffic without relying on labeled data. We plan to experiment with techniques such as K-Means and DBSCAN to group similar observations and identify outliers that may correspond to attacks. After clustering, we will evaluate how well the resulting groupings align with the true labels using appropriate metrics for unsupervised learning. This will help us assess the potential of unsupervised models to detect anomalous behavior in the absence of supervision.
+For the unsupervised learning portion of the project, we will use clustering-based approaches to detect anomalies in network traffic without relying on labeled data. We plan to use K-Means, which partitions data into k clusters based on distance, and DBSCAN, which identifies clusters of varying shape and isolates outliers as noise. These techniques will be applied to the same feature-engineered data used in the supervised task.
+
+After clustering, we will evaluate how well the resulting groupings align with the true labels using unsupervised performance metrics such as adjusted Rand index and silhouette scores. We will also examine which features appear most influential in driving cluster separation and anomaly detection, enabling comparison with the supervised model’s learned feature importance.
 
 ### Summary Comparison
 
-To compare the supervised and unsupervised approaches, we will evaluate their ability to correctly identify anomalous traffic using relevant metrics for each method. We will also consider practical factors such as interpretability, scalability, and the need for labeled data.
+To compare the supervised and unsupervised approaches, we will evaluate their effectiveness in detecting anomalous traffic using metrics appropriate to each task. In addition to quantitative performance, we will compare the features deemed most influential by each modeling approach, revealing how different learning paradigms interpret the same network traffic. We will also consider practical factors such as scalability, interpretability, and the requirement for labeled data, to assess the trade-offs between the two strategies.
+
 
 ### Project Timeline
 
