@@ -277,7 +277,6 @@ After clustering, we will evaluate how well the resulting groupings align with t
 
 To compare the supervised and unsupervised approaches, we will evaluate their effectiveness in detecting anomalous traffic using metrics appropriate to each task. In addition to quantitative performance, we will compare the features deemed most influential by each modeling approach, revealing how different learning paradigms interpret the same network traffic. We will also consider practical factors such as scalability, interpretability, and the requirement for labeled data, to assess the trade-offs between the two strategies.
 
-
 ### Project Timeline
 
 | Task Name | Status | Due | Priority | Summary | Team Member |
@@ -292,3 +291,7 @@ To compare the supervised and unsupervised approaches, we will evaluate their ef
 | Evaluation of unsupervised models | Not Started | Week 4 | Medium | Compare cluster assignments to labels using Adjusted Rand Index; report silhouette where relevant. | Joey |
 | Comparative analysis | Not Started | Week 4 | High | Contrast performance and feature influence across supervised vs. unsupervised approaches. | Both |
 | Final report & presentation | Not Started | Week 5 | High | Compile results, figures, and discussion into final deliverables. | Both |
+
+### File System Organization
+
+There are no changes to the provided template other than adding the .csv files to the data folder.
