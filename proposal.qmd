@@ -19,8 +19,6 @@ execute:
 jupyter: python3
 ---
 
-Both Joey Garcia and David Kyle contributed to this proposal. The coding effort and final deliverable will be divided between the team members as makes sense, although that division has yet to be determined.  
-
 ```{python}
 #| label: load-pkgs
 #| message: false
@@ -282,13 +280,15 @@ To compare the supervised and unsupervised approaches, we will evaluate their ef
 
 ### Project Timeline
 
-| Task Name | Status | Due | Priority | Summary |
-|-------------|-------------|-------------|-------------|-----------------------|
-| Dataset exploration | In Progress | Week 1 | High | Load the dataset, inspect features, handle any preprocessing needs. |
-| Define research questions | Complete | Week 1 | High | Clarify goals for supervised and unsupervised anomaly detection. |
-| Supervised model development | Not Started | Week 2 | High | Train models like Random Forest, Logistic Regression, and XGBoost. |
-| Evaluation of supervised models | Not Started | Week 3 | High | Use accuracy, precision, recall, F₁, and ROC-AUC to assess performance. |
-| Unsupervised model development | Not Started | Week 3 | Medium | Explore methods like Isolation Forest and clustering. |
-| Evaluation of unsupervised models | Not Started | Week 4 | Medium | Compare anomaly scores to labeled data using precision-recall metrics. |
-| Comparative analysis | Not Started | Week 4 | High | Analyze strengths and weaknesses of both approaches. |
-| Final report & presentation | Not Started | Week 5 | High | Compile results, figures, and discussion into final deliverables. |
+| Task Name | Status | Due | Priority | Summary | Team Member |
+|-------------|-------------|-------------|-------------|-----------------------|--------------|
+| Dataset exploration | In Progress | Week 1 | High | Load the dataset, inspect features, validate schema, sanity-check label balance. | Both |
+| Define research questions and proposal | Complete | Week 1 | High | Clarify goals for supervised (XGBoost) and unsupervised (K-Means/DBSCAN) anomaly detection. | Both |
+| EDA (univariate & bivariate) | Not Started | Week 3 | High | Describe distributions, correlations, missing data, outliers; document insights that inform modeling. | David |
+| Feature engineering & preprocessing | Not Started | Week 3 | High | One-hot encode categoricals, standardize numerics, remove low-variance/redundant cols; build a reusable pipeline. | David |
+| Supervised model development | Not Started | Week 2 | High | Train XGBoost to classify traffic as normal vs. anomalous. | David |
+| Evaluation of supervised models | Not Started | Week 3 | High | Use accuracy, precision, recall, F-1, and ROC-AUC to assess performance. | David |
+| Unsupervised model development | Not Started | Week 3 | Medium | Explore K-Means and DBSCAN to cluster traffic and detect anomalies. | Joey |
+| Evaluation of unsupervised models | Not Started | Week 4 | Medium | Compare cluster assignments to labels using Adjusted Rand Index; report silhouette where relevant. | Joey |
+| Comparative analysis | Not Started | Week 4 | High | Contrast performance and feature influence across supervised vs. unsupervised approaches. | Both |
+| Final report & presentation | Not Started | Week 5 | High | Compile results, figures, and discussion into final deliverables. | Both |
