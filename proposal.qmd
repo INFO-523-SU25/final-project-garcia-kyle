@@ -279,18 +279,102 @@ To compare the supervised and unsupervised approaches, we will evaluate their ef
 
 ### Project Timeline
 
-| Task Name | Status | Due | Priority | Summary | Team Member |
-|-------------|-------------|-------------|-------------|-----------------------|--------------|
-| Dataset exploration | In Progress | Week 1 | High | Load the dataset, inspect features, validate schema, sanity-check label balance. | Both |
-| Define research questions and proposal | Complete | Week 1 | High | Clarify goals for supervised (XGBoost) and unsupervised (K-Means/DBSCAN) anomaly detection. | Both |
-| EDA (univariate & bivariate) | Not Started | Week 3 | High | Describe distributions, correlations, missing data, outliers; document insights that inform modeling. | David |
-| Feature engineering & preprocessing | Not Started | Week 3 | High | One-hot encode categoricals, standardize numerics, remove low-variance/redundant cols; build a reusable pipeline. | David |
-| Supervised model development | Not Started | Week 2 | High | Train XGBoost to classify traffic as normal vs. anomalous. | David |
-| Evaluation of supervised models | Not Started | Week 3 | High | Use accuracy, precision, recall, F-1, and ROC-AUC to assess performance. | David |
-| Unsupervised model development | Not Started | Week 3 | Medium | Explore K-Means and DBSCAN to cluster traffic and detect anomalies. | Joey |
-| Evaluation of unsupervised models | Not Started | Week 4 | Medium | Compare cluster assignments to labels using Adjusted Rand Index; report silhouette where relevant. | Joey |
-| Comparative analysis | Not Started | Week 4 | High | Contrast performance and feature influence across supervised vs. unsupervised approaches. | Both |
-| Final report & presentation | Not Started | Week 5 | High | Compile results, figures, and discussion into final deliverables. | Both |
+<style>
+.project-timeline {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.85em;        /* Compact font size */
+  line-height: 1.3;         /* Matches paragraph line spacing closely */
+}
+.project-timeline th, .project-timeline td {
+  border: 1px solid #ccc;
+  padding: 5px 6px;         /* Vertical 5px, horizontal 6px */
+  vertical-align: top;
+}
+.project-timeline th {
+  background-color: #f8f8f8;
+  text-align: left;
+}
+.project-timeline td:first-child {
+  text-align: center;
+  width: 5%;
+}
+.project-timeline th:nth-child(2) { width: 20%; }
+.project-timeline th:nth-child(3) { width: 55%; }
+.project-timeline th:nth-child(4) { width: 20%; }
+</style>
+
+<table class="project-timeline">
+<thead>
+<tr>
+<th>Week</th>
+<th>Task Name</th>
+<th>Summary</th>
+<th>Team Member(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Dataset exploration</td>
+<td>Load the dataset, inspect features, validate schema, sanity-check label balance.</td>
+<td>Both</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Define research questions and proposal</td>
+<td>Clarify goals for supervised (XGBoost) and unsupervised (K-Means/DBSCAN) anomaly detection.</td>
+<td>Both</td>
+</tr>
+<tr>
+<td>2</td>
+<td>EDA &amp; Feature engineering</td>
+<td>Explore distributions, correlations, missing data, and outliers; then one-hot encode categoricals, standardize numerics, and remove low-variance/redundant columns to build a reusable pipeline.</td>
+<td>David</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Supervised model development</td>
+<td>Train XGBoost to classify traffic as normal vs. anomalous.</td>
+<td>David</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Evaluation of supervised models</td>
+<td>Use accuracy, precision, recall, F-1, and ROC-AUC to assess performance.</td>
+<td>David</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Unsupervised model development</td>
+<td>Explore K-Means and DBSCAN to cluster traffic and detect anomalies.</td>
+<td>Joey</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Evaluation of unsupervised models</td>
+<td>Compare cluster assignments to labels using Adjusted Rand Index; report silhouette where relevant.</td>
+<td>Joey</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Comparative analysis</td>
+<td>Contrast performance and feature influence across supervised vs. unsupervised approaches.</td>
+<td>Both</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Final report &amp; presentation</td>
+<td>Compile results, figures, and discussion into final deliverables.</td>
+<td>Both</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
 
 ### File System Organization
 
