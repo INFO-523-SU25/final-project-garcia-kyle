@@ -31,7 +31,7 @@ from scipy import stats # for analysis plan
 
 ## Dataset
 
-Our dataset doesn't include column names so we will add them to the in-memory dataframes.
+Our dataset doesn't include column names, we'll add the column names to the in-memory dataframes.
 
 ```{python}
 #| label: load-dataset
@@ -77,18 +77,18 @@ We chose this dataset because it provides a rich and realistic representation of
 
 ## Questions
 
-Q1. Using a supervised learning model such as XGBoost, can we accurately classify network traffic as normal or anomalous? What features are most influential in driving the model's predictions?
+Q1. Using a supervised learning model such as XGBoost, how accurate can we classify network traffic as normal or anomalous? What features are most influential in driving the model's predictions?
 
-Q2. Can unsupervised learning methods such as K-Means and DBSCAN detect anomalous network traffic without labeled data? How do they group traffic, and which features appear to influence those groupings?
+Q2. Can unsupervised learning methods such as K-Means Clustering and Density-based spatial clustering of applications with noise (DBSCAN) detect anomalous network traffic without labeled data? How do they group the traffic network traffic, and how do the results compare to the supervised models?
 
-Summary. In addition to evaluating the performance of supervised and unsupervised models on the task of anomaly detection, we compare the most influential features identified by each approach. This allows us to investigate how different learning paradigms "perceive" and prioritize threat indicators within the same dataset.
+Summary. In addition to evaluating the performance of supervised and unsupervised models on the task of anomaly detection, we compare the most influential features identified by each approach. This allows us to investigate how different learning paradigms "perceive" and prioritize threat indicators (features) within the same dataset.
 
 ## Dataset Analysis
 
 ### Variables
 
 | Column Name | Data Type | Description |
-|---------------|---------------|-------------------------------------------|
+|------------------|----------------|--------------------------------------|
 | `duration` | int64 | Length (in seconds) of the connection. |
 | `protocol_type` | object | Protocol used (e.g., tcp, udp, icmp). |
 | `service` | object | Network service on the destination (e.g., http, telnet). |
@@ -135,7 +135,7 @@ Summary. In addition to evaluating the performance of supervised and unsupervise
 
 ### Exploratory Data Analysis
 
-We take a quick look at the training data to see if there are any obvious imbalances.
+Evaluate training data for any obvious imbalances.
 
 ```{python}
 #| label: Exploratory Data Analysis
@@ -149,11 +149,11 @@ print("Attack label distribution:\n", df_train['attack'].value_counts().head(5))
 df_train.info(verbose=False)
 ```
 
-The brief look at the data is positive. There are plenty of data points and features. Depending on time and model fitting speed, we may decrease our sample size, as hyperparameter tuning using GridSearchCV can be time-intensive. There are no missing values, and the glimpse of the attack column provides insight into why we want to collapse it into a binary column.
+The brief look at the data is positive. There are plenty of data points and features. Depending on time and model fitting speed, we may decrease our sample size because hyperparameter tuning using GridSearchCV can be computationally intensive. There are no missing values, and the glimpse of the attack column provides insight into why we want to collapse it into a binary column.
 
 ### Normal vs Anomalous Traffic
 
-First, look at the amount of normal v. anomalous data.
+First, let's evaluate distribution of normal v. anomalous data.
 
 ```{python}
 #| label: class-distribution
@@ -192,7 +192,7 @@ print(df_train['attack'].value_counts())
 
 The plot provides an idea of the specific attack types expressesd in the data. The plot communicates why it makes sense to group all non-normal traffic together.
 
-We feature engineer a new column, `is_anomalous`, this contains 0 if the connection is normal and 1 if the connection is not normal.
+We feature engineer a new column, `is_anomalous`, we identify 0 as `normal` activity and 1 as `anomalous`.
 
 ```{python}
 #| label: feature-engineering
@@ -259,7 +259,7 @@ For supervised models, these engineered features will be used alongside the bina
 
 ### Dimensionality Reduction
 
-Since the dataset contains over 40 features, we will apply dimensionality reduction techniques such as Principal Component Analysis (PCA) and Linear Discriminant Analysis (LDA) to aid in visualization, mitigate the curse of dimensionality, and potentially improve model performance. We will evaluate how reduced-dimensional representations affect clustering and classification results and determine whether retaining all features or selecting a subset leads to more interpretable and performant models.
+Since the dataset contains over 40 features, we will apply dimensionality reduction techniques such as Principal Component Analysis (PCA) and Linear Discriminant Analysis (LDA) to aid in visualization, mitigate the curse of dimensionality, and potentially improve model performance. We will evaluate how reduced-dimensional representations affect clustering and classification results and determine whether retaining all features or selecting a subset leads to more interpretable and higher performing models.
 
 ### Q1. Supervised Learning
 
@@ -269,9 +269,9 @@ Model performance will be evaluated using standard classification metrics, inclu
 
 ### Q2. Unsupervised Learning
 
-For the unsupervised learning portion of the project, we will use clustering-based approaches to detect anomalies in network traffic without relying on labeled data. We plan to use K-Means, which partitions data into k clusters based on distance, and DBSCAN, which identifies clusters of varying shape and isolates outliers as noise. These techniques will be applied to the same feature-engineered data used in the supervised task.
+For the unsupervised learning portion of the project, we will use clustering-based approaches to detect anomalies in network traffic without relying on labeled data. We plan to use K-Means, which partitions data into k-clusters based on distance. Also, we'll use DBSCAN, which identifies clusters of varying shape and isolates outliers as noise. These techniques will be applied to the same feature-engineered data used in the supervised learning tasks.
 
-After clustering, we will evaluate how well the resulting groupings align with the true labels using unsupervised performance metrics such as adjusted Rand index and silhouette scores. We will also examine which features appear most influential in driving cluster separation and anomaly detection, enabling comparison with the supervised model’s learned feature importance.
+After clustering, we will evaluate how well the resulting groupings align with the true labels using unsupervised performance metrics such as Adjusted Rand Index (ARI) and Fowlkes-Mallows Index (FMI) since we have the labels. We will also examine which features appear most influential in driving cluster separation and anomaly detection, enabling comparison with the supervised model’s learned feature importance.
 
 ### Summary Comparison
 
@@ -279,6 +279,7 @@ To compare the supervised and unsupervised approaches, we will evaluate their ef
 
 ### Project Timeline
 
+```{=html}
 <style>
 .project-timeline {
   border-collapse: collapse;
@@ -303,78 +304,19 @@ To compare the supervised and unsupervised approaches, we will evaluate their ef
 .project-timeline th:nth-child(3) { width: 55%; }
 .project-timeline th:nth-child(4) { width: 20%; }
 </style>
+```
 
-<table class="project-timeline">
-<thead>
-<tr>
-<th>Week</th>
-<th>Task Name</th>
-<th>Summary</th>
-<th>Team Member(s)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Dataset exploration</td>
-<td>Load the dataset, inspect features, validate schema, sanity-check label balance.</td>
-<td>Both</td>
-</tr>
-<tr>
-<td>1</td>
-<td>Define research questions and proposal</td>
-<td>Clarify goals for supervised (XGBoost) and unsupervised (K-Means/DBSCAN) anomaly detection.</td>
-<td>Both</td>
-</tr>
-<tr>
-<td>2</td>
-<td>EDA &amp; Feature engineering</td>
-<td>Explore distributions, correlations, missing data, and outliers; then one-hot encode categoricals, standardize numerics, and remove low-variance/redundant columns to build a reusable pipeline.</td>
-<td>David</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Supervised model development</td>
-<td>Train XGBoost to classify traffic as normal vs. anomalous.</td>
-<td>David</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Evaluation of supervised models</td>
-<td>Use accuracy, precision, recall, F-1, and ROC-AUC to assess performance.</td>
-<td>David</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Unsupervised model development</td>
-<td>Explore K-Means and DBSCAN to cluster traffic and detect anomalies.</td>
-<td>Joey</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Evaluation of unsupervised models</td>
-<td>Compare cluster assignments to labels using Adjusted Rand Index; report silhouette where relevant.</td>
-<td>Joey</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Comparative analysis</td>
-<td>Contrast performance and feature influence across supervised vs. unsupervised approaches.</td>
-<td>Both</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Final report &amp; presentation</td>
-<td>Compile results, figures, and discussion into final deliverables.</td>
-<td>Both</td>
-</tr>
-</tbody>
-</table>
-
-
-
-
-
+| Week | Task Name | Summary | Team Member(s) |
+|----------|----------|-------------------------------------------|----------|
+| 1 | Dataset exploration | Load the dataset, inspect features, validate schema, sanity-check label balance. | Both |
+| 1 | Define research questions and proposal | Clarify goals for supervised (XGBoost) and unsupervised (K-Means/DBSCAN) anomaly detection. | Both |
+| 2 | EDA & Feature engineering | Explore distributions, correlations, missing data, and outliers; then one-hot encode categoricals, standardize numerics, and remove low-variance/redundant columns to build a reusable pipeline. | Both |
+| 3 | Supervised model development | Train XGBoost to classify traffic as normal vs. anomalous. | David |
+| 3 | Evaluation of supervised models | Use accuracy, precision, recall, F-1, and ROC-AUC to assess performance. | David |
+| 3 | Unsupervised model development | Explore K-Means and DBSCAN to cluster traffic and detect anomalies. | Joey |
+| 4 | Evaluation of unsupervised models | Compare cluster assignments to labels using Adjusted Rand Index; report silhouette where relevant. | Joey |
+| 4 | Comparative analysis | Contrast performance and feature influence across supervised vs. unsupervised approaches. | Both |
+| 5 | Final report & presentation | Compile results, figures, and discussion into final deliverables. | Both |
 
 ### File System Organization
 
