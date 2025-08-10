@@ -1,6 +1,24 @@
-# project-final
+# Packet Traffic Learning
 
 Final project repo for INFO 523 - Summer 2025.
+
+## Project Website
+
+Full analysis, write-up, and presentation is [here](https://info-523-su25.github.io/final-project-garcia-kyle/)
+
+## Team
+
+The Anomalists 
+- [Joey Garcia](https://github.com/YouKnowJoey)
+- [David Kyle](https://github.com/s-david-kyle)
+
+## Project description
+
+Our project aims to develop a predictive model to detect anomalous network behavior using packet-level and statistical features derived from network traffic. With machine learning models, we aim to accurately classify and predict network anomalies, which is essential for intrusion detection, network security monitoring, and incident response automation.
+
+## Affiliations
+
+College of Information Science, University of Arizona
 
 #### Disclosure:
 Derived from the original data viz course by Mine Çetinkaya-Rundel @ Duke University
