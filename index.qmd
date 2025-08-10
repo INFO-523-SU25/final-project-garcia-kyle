@@ -1,11 +1,11 @@
 ---
-title: "Project Title"
+title: "Packet Traffic Learning"
 subtitle: "INFO 523 - Final Project"
 author: 
-  - name: "Team name - Team member 1, Team member 2,..."
+  - name: "The Anomalists - Joey Garcia, David Kyle"
     affiliations:
       - name: "College of Information Science, University of Arizona"
-description: "Project description"
+description: "Project description: Our project aims to develop a predictive model to detect anomalous network behavior using packet-level and statistical features derived from network traffic. With machine learning models, we aim to accurately classify and predict network anomalies, which is essential for intrusion detection, network security monitoring, and incident response automation."
 format:
    html:
     code-tools: true
@@ -20,4 +20,39 @@ jupyter: python3
 
 ## Abstract
 
-Add project abstract here.
+This project studies the implications and results of using supervised and unsupervied learning methods for classifying network traffic. For supervised learning, we employ the XGBooster classifer to assess the accuracy of detecting anomalous network traffic using labeled data. In parellel, we'll explore unsupervised learning methods, such as K-means clustering and Density-based spatial clustering of applications with noise (DBSCAN), to determine their capabilities in identifying anomalous traffic without the use of labeled data. This project is unique in the sense that we're comparing the strengths and limitations of the two approaches above. These strategies can determine how intrusion detection, network security monitoring, and incident response can both be used in unison for future hybrid approaches.
+
+## Introduction
+
+Network intrusion threats are continuously evolving in the realm of cybersecurity. Note: "Talk about efficiency and evolbing threats."
+
+## Research Questions 
+
+Q1. Using a supervised learning model such as XGBoost, how accurate can we classify network traffic as normal or anomalous? What features are most influential in driving the model's predictions?
+
+Q2. Can unsupervised learning methods such as K-Means Clustering and DBSCAN detect anomalous network traffic without labeled data? How do they group the traffic network traffic, and how do the results compare to the supervised models?
+
+
+### Preprocessing (Scaling and Feature Engineering)
+
+
+
+### How we'll evalutate performance Metrics 
+
+
+
+## Model Predictions
+
+
+
+### Supervised Learning Model
+
+
+
+### Unsupervised Learning Model
+
+
+
+## Conclusion and Insights
+
+

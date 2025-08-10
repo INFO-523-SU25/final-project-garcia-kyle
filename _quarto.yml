@@ -11,7 +11,7 @@ website:
     left:
       - text: Project
         href: index.qmd
-      - text: Proposal
+      - text: Proposal and Analysis
         href: proposal.qmd
       - text: Presentation
         href: presentation.qmd
