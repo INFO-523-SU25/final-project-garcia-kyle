@@ -34,14 +34,24 @@ Q2. Can unsupervised learning methods such as K-Means Clustering and DBSCAN dete
 
 ### Preprocessing (Scaling, Feature Engineering, Dimension Reduction)
 
+To ensure a fair, consistent comparison between supervised and unsupervised approaches, the feature engineering pipeline will be applied to both. All features will be named according to the NSL-KDD documentation. Categorical variables such as protocol_type, service, and flag, will be one-hot encoded while low-variance columns will be removed. Numerical features will be standardized to normalize their ranges.
+
+For supervised models, the processed features will be paired with the binary target `is_anomalous`. For unsupervised models, the same feature set will be used without labels, allowing the algorithms to uncover structure or detect anomalies. This consistent preprocessing ensures that performance differences are driven by modeling choices rather than data preparation discrepancies.
+
+Given the dataset’s over 40 features, we explore dimensionality reduction methods such as Principal Component Analysis (PCA) and Linear Discriminant Analysis (LDA), however, for interpretability we' chose to use Mutual information to . These will aid in visualization, mitigate the curse of dimensionality, and potentially enhance model performance. We will compare results using reduced dimensions versus the full feature set to determine which yields more interpretable and effective models.
+
 ### How we'll evalutate performance Metrics
 
-(F1 score)
+We'll use F1 score as the primary metric for model evaluation. The F1 score balances precision (minimizing false positives) and recall (minimizing false negatives). The F1 score is a balanced approach to identify both types of errors, misclassifying normal traffic (false positive) or missing a true anomoly (false negative), that carry significant impacts. Secondary metrics, such as accuracy, ROC AUC, and confusion matrix analysis, will be monitored for additional insight into the model's behavior. To ensure robust results, we'll apply sampling methods such as cross-validation to search for the best F1-score.
 
 ## Model Predictions
 
 ### Supervised Learning Model
 
+The supervised machine learning technique that we'll be using are XGBoosting Classifer. 
+
 ### Unsupervised Learning Model
+
+The unsupervised machine techniques that we'll be using are K-Means CLustering and Density-Based Spatial Clustering of Applications with Noise (DBSCAN). 
 
 ## Conclusion and Insights
