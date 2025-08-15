@@ -24,7 +24,7 @@ This project studies the implications and results of using supervised and unsupe
 
 ## Introduction
 
-Network intrusion threats are continuously evolving in the realm of cybersecurity. Note: "Talk about efficiency and evolbing threats."
+Network intrusion threats are continuously evolving in the realm of cybersecurity, challenging the effectiveness of traditional security practices. As attackers develop new techniques, it becomes increasingly important to efficiently analyze network traffic to identify anomalous patterns that may indicate potential threats to cyber infrastructure. Leveraging machine learning, particularly unsupervised learning methods, allows for the detection of previously unseen or novel threats without relying solely on labeled data. This adaptability is crucial in an ever-changing threat landscape, enabling proactive identification and mitigation of security risks.
 
 ## Research Questions 
 
@@ -33,13 +33,13 @@ Q1. Using a supervised learning model such as XGBoost, how accurate can we class
 Q2. Can unsupervised learning methods such as K-Means Clustering and DBSCAN detect anomalous network traffic without labeled data? How do they group the traffic network traffic, and how do the results compare to the supervised models?
 
 
-### Preprocessing (Scaling and Feature Engineering)
+### Preprocessing (Scaling, Feature Engineering, Dimension Reduction)
 
 
 
 ### How we'll evalutate performance Metrics 
 
-
+(F1 score)
 
 ## Model Predictions
 
