@@ -18,9 +18,48 @@ execute:
 jupyter: python3
 ---
 
+```{python}
+#| label: load-packages
+#| message: false
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy import stats, sparse
+import joblib
+
+# Preprocessing 
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.feature_selection import VarianceThreshold, mutual_info_classif
+from sklearn.model_selection import RandomizedSearchCV, StratifiedKFold
+from sklearn.decomposition import PCA
+
+# Machine Learning Models
+from xgboost import XGBClassifier           # Supervised
+from sklearn.cluster import KMeans, DBSCAN  # Unsupervised
+from sklearn.mixture import GaussianMixture 
+from sklearn.neighbors import NearestNeighbors
+from kneed import KneeLocator               # find epsilon for DBSCAN
+
+# Metrics and Visualization
+from sklearn.metrics import make_scorer, f1_score, roc_auc_score, \
+    accuracy_score, classification_report, confusion_matrix, \
+        silhouette_score, adjusted_rand_score, davies_bouldin_score
+import shap
+```
+
+```{python}
+#| label: load-ds
+#| message: false
+
+df_train = pd.read_csv('data/KDDTrain.csv')
+df_test = pd.read_csv('data/KDDTest.csv')
+```
+
+
 ## Abstract
 
-This project studies the implications and results of using supervised and unsupervied learning methods for classifying network traffic. For supervised learning, we employ the XGBooster classifer to assess the accuracy of detecting anomalous network traffic using labeled data. In parellel, we'll explore unsupervised learning methods, such as K-means clustering and Density-based spatial clustering of applications with noise (DBSCAN), to determine their capabilities in identifying anomalous traffic without the use of labeled data. This project is unique in the sense that we're comparing the strengths and limitations of the two approaches above. These strategies can determine how intrusion detection, network security monitoring, and incident response can both be used in unison for future hybrid approaches.
+This project studies the implications and results of using supervised and unsupervised learning methods for classifying network traffic. For supervised learning, we employ the XGBooster classier to assess the accuracy of detecting anomalous network traffic using labeled data. In parallel, we'll explore unsupervised learning methods, such as K-means clustering and Density-based spatial clustering of applications with noise (DBSCAN), to determine their capabilities in identifying anomalous traffic without the use of labeled data. This project is unique in the sense that we're comparing the strengths and limitations of the two approaches above. These strategies can determine how intrusion detection, network security monitoring, and incident response can both be used in unison for future hybrid approaches.
 
 ## Introduction
 
@@ -32,6 +71,90 @@ Q1. Using a supervised learning model such as XGBoost, how accurate can we class
 
 Q2. Can unsupervised learning methods such as K-Means Clustering and DBSCAN detect anomalous network traffic without labeled data? How do they group the traffic network traffic, and how do the results compare to the supervised models?
 
+## Dataset
+
+We are using a training and testing dataset of network intrusion detection from [NSL-KDD on Kaggle](https://www.kaggle.com/datasets/hassan06/nslkdd/data?select=KDDTrain1.jpg). The training dataset contains **125,972 rows** and **43 columns**, while the test dataset contains **22,543 rows** and **43 columns**.
+
+The records include both normal traffic and a variety of attack samples. The dataset is curated to provide challenging cases for machine learning algorithms, with each sample rated on a difficulty scale from 1 to 21, where 21 represents the most difficult to predict.
+
+The `attack` field indicates whether each observation is normal or belongs to a specific attack type, allowing for multi-class classification of anomalous network activity. For this project, we add a new binary classification feature, `is_anomalous`, to indicate whether a network connection is anomalous or not. This will serve as the target variable.
+
+Looking at the vaious `attack` values, combining non-normal traffic into a composite column makes sense:
+
+```{python}
+#| label: countplot-anomalous
+#| message: false
+# plot style
+
+df_train['is_anomalous'] = df_train['attack'].apply(
+  lambda x: 0 if x == 'normal' else 1)
+
+df_test['is_anomalous'] = df_test['attack'].apply(
+  lambda x: 0 if x == 'normal' else 1)
+
+sns.set(style="whitegrid")
+
+# get top 10 attack types
+top_10_attacks = df_train['attack'].value_counts().head(10).index
+
+# plot
+plt.figure(figsize=(8, 5))
+sns.countplot(
+    data=df_train[df_train['attack'].isin(top_10_attacks)],
+    x="attack",
+    hue="attack",
+    palette="Set2",
+    order=top_10_attacks
+)
+
+plt.title("Top 10 Attack Types in Training Data")
+plt.xlabel("Attack Type")
+plt.ylabel("Count")
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()
+
+```
+
+Once the data is combined into the composite `is_anomalous` column, good balance is seen making this a solid choice for a target column.
+
+```{python}
+#| label: load-pkgs
+#| message: false
+# plot style
+plt.figure(figsize = (8, 5))
+
+ax = sns.countplot(x = 'is_anomalous', 
+                   data = df_train, 
+                   palette = "Set2", 
+                   hue = "is_anomalous"
+                  )
+plt.xticks([0, 1], ['Normal (0)', 'Anomalous (1)'])
+plt.xlabel('Network Traffic Type')
+plt.ylabel('Count')
+plt.title('Normal vs Anomalous Network Traffic in Training Data')
+
+ax.legend_.remove()
+ax.grid(False, axis = 'y')
+
+plt.tight_layout()
+plt.show()
+
+# Create summary table for is_anomalous
+value_counts = df_train["is_anomalous"].value_counts()
+percentages = (value_counts / value_counts.sum()) * 100
+
+summary_table = pd.DataFrame({
+    "Count": value_counts,
+    "Percentage": percentages.round(2)
+}).rename(index={0: "Normal", 1: "Attack"})
+
+summary_table
+```
+
+We chose this dataset because it provides a rich and realistic representation of network traffic. The presence of labeled data allows us to train and evaluate supervised models, while the diversity and complexity of traffic patterns also make it well suited for exploring unsupervised anomaly detection techniques. This balance between complexity and feature richness aligns with our research questions and modeling goals.
+
 ### Preprocessing (Scaling, Feature Engineering, Dimension Reduction)
 
 To ensure a fair, consistent comparison between supervised and unsupervised approaches, the feature engineering pipeline will be applied to both. All features will be named according to the NSL-KDD documentation. Categorical variables such as protocol_type, service, and flag, will be one-hot encoded while low-variance columns will be removed. Numerical features will be standardized to normalize their ranges.
@@ -40,7 +163,117 @@ For supervised models, the processed features will be paired with the binary tar
 
 Given the dataset’s over 40 features, we explore dimensionality reduction methods such as Principal Component Analysis (PCA) and Linear Discriminant Analysis (LDA), however, for interpretability we' chose to use Mutual information to . These will aid in visualization, mitigate the curse of dimensionality, and potentially enhance model performance. We will compare results using reduced dimensions versus the full feature set to determine which yields more interpretable and effective models.
 
-### How we'll evalutate performance Metrics
+![Exploritory Data Analysis Steps](artifacts/EDA.png){fig-align="center" width="40%"}
+
+After the data analysis and feature selection, 17 features remain.
+
+#### Final Dataset Features
+
+The final dataset used for modeling contains the following features and target variable:
+
+| Column Name                  | Data Type | Description                                                   | Notes                        |
+|-------------------------------|-----------|---------------------------------------------------------------|------------------------------|
+| `src_bytes`                   | int64     | Number of data bytes sent from source to destination.          | Numeric (scaled)             |
+| `dst_bytes`                   | int64     | Number of data bytes sent from destination to source.          | Numeric (scaled)             |
+| `count`                       | int64     | Number of connections to the same host in the past 2 seconds.  | Numeric (scaled)             |
+| `srv_diff_host_rate`          | float64   | % of connections to different hosts on the same service.       | Numeric (scaled)             |
+| `serror_rate`                 | float64   | % of connections with SYN errors.                              | Numeric (scaled)             |
+| `same_srv_rate`               | float64   | % of connections to the same service.                          | Numeric (scaled)             |
+| `diff_srv_rate`               | float64   | % of connections to different services.                        | Numeric (scaled)             |
+| `dst_host_count`              | int64     | Number of connections to the destination host.                 | Numeric (scaled)             |
+| `dst_host_srv_count`          | int64     | Number of connections to the destination host and service.     | Numeric (scaled)             |
+| `dst_host_same_srv_rate`      | float64   | % of connections to the same service on the destination host.  | Numeric (scaled)             |
+| `dst_host_diff_srv_rate`      | float64   | % of connections to different services on the destination host.| Numeric (scaled)             |
+| `dst_host_same_src_port_rate` | float64   | % of connections from the same source port.                    | Numeric (scaled)             |
+| `dst_host_srv_diff_host_rate` | float64   | % of connections to the same service from different hosts.     | Numeric (scaled)             |
+| `logged_in`                   | int64     | 1 if successfully logged in; 0 otherwise.                      | Binary indicator             |
+| `flag_SF`                     | int64     | One-hot encoded: Status flag "SF" of the connection.           | One-hot encoded categorical  |
+| `service_http`                | int64     | One-hot encoded: Network service is HTTP.                      | One-hot encoded categorical  |
+| `service_private`             | int64     | One-hot encoded: Network service is "private".                 | One-hot encoded categorical  |
+| `is_anomalous`                | int64     | Target: 1 if connection is anomalous; 0 if normal.             | Target variable              |
+
+
+#### Data Validation Visualizations
+
+```{python}
+#| label: load-ds_EDA
+#| message: false
+
+df_train_EDA = pd.read_csv('data/df_train_EDA.csv')
+df_test_EDA = pd.read_csv('data/df_test_EDA.csv')
+```
+
+A correlation heatmap and a PCA projection validte our data and provide a look at the quality of the data following the processing. 
+
+```{python}
+#| label: correlation_heatmap
+#| message: false
+
+target_col = "is_anomalous"
+
+X_EDA = df_train_EDA.drop(columns=[target_col])
+
+# compute correlation matrix
+corr = X_EDA.corr(method="pearson")
+
+# plot style
+sns.set(style="white")
+
+# heatmap
+plt.figure(figsize=(12, 10))
+sns.heatmap(
+    corr,
+    cmap="vlag",
+    linewidths=0.5,
+    annot=False,
+    center=0,
+    square=True,
+    cbar_kws={"shrink": 0.8}
+)
+
+plt.title("Feature Correlation Heatmap", fontsize=14)
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+```
+
+The heatmap shows some correlation, but we re using models that will handle it.
+
+PCA Projection
+
+```{python}
+#| label: PCA-Projection
+#| message: false
+#| warning: false
+#| echo: false
+
+target_col = "is_anomalous"
+
+X_pca = PCA(n_components=2, random_state=42).fit_transform(
+    df_train_EDA.drop(columns=[target_col])
+)
+
+pca_df = pd.DataFrame(X_pca, columns=["PC1", "PC2"])
+pca_df[target_col] = df_train_EDA[target_col].values
+
+plt.figure(figsize=(8, 6))
+
+sns.scatterplot(
+    data=pca_df,
+    x="PC1", y="PC2",
+    hue=target_col,
+    palette="coolwarm",
+    alpha=0.5
+)
+plt.title("PCA Projection Final Features")
+plt.show()
+```
+
+PCA projection of the top features shows partial separation between normal and anomalous traffic. While some overlap exists, the clustering indicates meaningful structure that can support classification models.
+
+The team is satistfied with the results of the EDA and feel the data is in a good position for modeling.
+
+### How we'll evaluate performance Metrics
 
 We'll use F1 score as the primary metric for model evaluation. The F1 score balances precision (minimizing false positives) and recall (minimizing false negatives). The F1 score is a balanced approach to identify both types of errors, misclassifying normal traffic (false positive) or missing a true anomoly (false negative), that carry significant impacts. Secondary metrics, such as accuracy, ROC AUC, and confusion matrix analysis, will be monitored for additional insight into the model's behavior. To ensure robust results, we'll apply sampling methods such as cross-validation to search for the best F1-score.
 
@@ -48,10 +281,10 @@ We'll use F1 score as the primary metric for model evaluation. The F1 score bala
 
 ### Supervised Learning Model
 
-The supervised machine learning technique that we'll be using are XGBoosting Classifer. 
+The supervised machine learning technique that we'll be using are XGBoosting Classifer.
 
 ### Unsupervised Learning Model
 
-The unsupervised machine techniques that we'll be using are K-Means CLustering and Density-Based Spatial Clustering of Applications with Noise (DBSCAN). 
+The unsupervised machine techniques that we'll be using are K-Means CLustering and Density-Based Spatial Clustering of Applications with Noise (DBSCAN).
 
 ## Conclusion and Insights
