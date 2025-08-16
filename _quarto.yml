@@ -11,8 +11,10 @@ website:
     left:
       - text: Project
         href: index.qmd
-      - text: Proposal and Analysis
+      - text: Proposal
         href: proposal.qmd
+      - text: Analysis
+        href: analysis.ipynb
       - text: Presentation
         href: presentation.qmd
       - text: About
