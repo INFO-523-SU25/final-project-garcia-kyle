@@ -57,7 +57,6 @@ df_train = pd.read_csv('data/KDDTrain.csv')
 df_test = pd.read_csv('data/KDDTest.csv')
 ```
 
-
 ## Abstract
 
 This project studies the implications and results of using supervised and unsupervised learning methods for classifying network traffic. For supervised learning, we employ the XGBooster classier to assess the accuracy of detecting anomalous network traffic using labeled data. In parallel, we'll explore unsupervised learning methods, such as K-means clustering and Density-based spatial clustering of applications with noise (DBSCAN), to determine their capabilities in identifying anomalous traffic without the use of labeled data. This project is unique in the sense that we're comparing the strengths and limitations of the two approaches above. These strategies can determine how intrusion detection, network security monitoring, and incident response can both be used in unison for future hybrid approaches.
@@ -172,27 +171,26 @@ After the data analysis and feature selection, 17 features remain.
 
 The final dataset used for modeling contains the following features and target variable:
 
-| Column Name                  | Data Type | Description                                                   | Notes                        |
-|-------------------------------|-----------|---------------------------------------------------------------|------------------------------|
-| `src_bytes`                   | int64     | Number of data bytes sent from source to destination.          | Numeric (scaled)             |
-| `dst_bytes`                   | int64     | Number of data bytes sent from destination to source.          | Numeric (scaled)             |
-| `count`                       | int64     | Number of connections to the same host in the past 2 seconds.  | Numeric (scaled)             |
-| `srv_diff_host_rate`          | float64   | % of connections to different hosts on the same service.       | Numeric (scaled)             |
-| `serror_rate`                 | float64   | % of connections with SYN errors.                              | Numeric (scaled)             |
-| `same_srv_rate`               | float64   | % of connections to the same service.                          | Numeric (scaled)             |
-| `diff_srv_rate`               | float64   | % of connections to different services.                        | Numeric (scaled)             |
-| `dst_host_count`              | int64     | Number of connections to the destination host.                 | Numeric (scaled)             |
-| `dst_host_srv_count`          | int64     | Number of connections to the destination host and service.     | Numeric (scaled)             |
-| `dst_host_same_srv_rate`      | float64   | % of connections to the same service on the destination host.  | Numeric (scaled)             |
-| `dst_host_diff_srv_rate`      | float64   | % of connections to different services on the destination host.| Numeric (scaled)             |
-| `dst_host_same_src_port_rate` | float64   | % of connections from the same source port.                    | Numeric (scaled)             |
-| `dst_host_srv_diff_host_rate` | float64   | % of connections to the same service from different hosts.     | Numeric (scaled)             |
-| `logged_in`                   | int64     | 1 if successfully logged in; 0 otherwise.                      | Binary indicator             |
-| `flag_SF`                     | int64     | One-hot encoded: Status flag "SF" of the connection.           | One-hot encoded categorical  |
-| `service_http`                | int64     | One-hot encoded: Network service is HTTP.                      | One-hot encoded categorical  |
-| `service_private`             | int64     | One-hot encoded: Network service is "private".                 | One-hot encoded categorical  |
-| `is_anomalous`                | int64     | Target: 1 if connection is anomalous; 0 if normal.             | Target variable              |
-
+| Column Name | Data Type | Description | Notes |
+|---------------|---------------|-----------------------------|---------------|
+| `src_bytes` | int64 | Number of data bytes sent from source to destination. | Numeric (scaled) |
+| `dst_bytes` | int64 | Number of data bytes sent from destination to source. | Numeric (scaled) |
+| `count` | int64 | Number of connections to the same host in the past 2 seconds. | Numeric (scaled) |
+| `srv_diff_host_rate` | float64 | \% of connections to different hosts on the same service. | Numeric (scaled) |
+| `serror_rate` | float64 | \% of connections with SYN errors. | Numeric (scaled) |
+| `same_srv_rate` | float64 | \% of connections to the same service. | Numeric (scaled) |
+| `diff_srv_rate` | float64 | \% of connections to different services. | Numeric (scaled) |
+| `dst_host_count` | int64 | Number of connections to the destination host. | Numeric (scaled) |
+| `dst_host_srv_count` | int64 | Number of connections to the destination host and service. | Numeric (scaled) |
+| `dst_host_same_srv_rate` | float64 | \% of connections to the same service on the destination host. | Numeric (scaled) |
+| `dst_host_diff_srv_rate` | float64 | \% of connections to different services on the destination host. | Numeric (scaled) |
+| `dst_host_same_src_port_rate` | float64 | \% of connections from the same source port. | Numeric (scaled) |
+| `dst_host_srv_diff_host_rate` | float64 | \% of connections to the same service from different hosts. | Numeric (scaled) |
+| `logged_in` | int64 | 1 if successfully logged in; 0 otherwise. | Binary indicator |
+| `flag_SF` | int64 | One-hot encoded: Status flag "SF" of the connection. | One-hot encoded categorical |
+| `service_http` | int64 | One-hot encoded: Network service is HTTP. | One-hot encoded categorical |
+| `service_private` | int64 | One-hot encoded: Network service is "private". | One-hot encoded categorical |
+| `is_anomalous` | int64 | Target: 1 if connection is anomalous; 0 if normal. | Target variable |
 
 #### Data Validation Visualizations
 
@@ -204,7 +202,7 @@ df_train_EDA = pd.read_csv('data/df_train_EDA.csv')
 df_test_EDA = pd.read_csv('data/df_test_EDA.csv')
 ```
 
-A correlation heatmap and a PCA projection validte our data and provide a look at the quality of the data following the processing. 
+A correlation heatmap and a PCA projection validte our data and provide a look at the quality of the data following the processing.
 
 ```{python}
 #| label: correlation_heatmap
@@ -239,7 +237,6 @@ plt.show()
 ```
 
 The heatmap shows some correlation, but we're using models that will handle it.
-
 
 PCA Projection
 
@@ -277,7 +274,9 @@ The team is satistfied with the results of the EDA and feel the data is in a goo
 
 ### How we'll evaluate performance Metrics
 
-We'll use F1 score as the primary metric for model evaluation. The F1 score balances precision (minimizing false positives) and recall (minimizing false negatives). The F1 score is a balanced approach to identify both types of errors, misclassifying normal traffic (false positive) or missing a true anomoly (false negative), that carry significant impacts. Secondary metrics, such as accuracy, ROC AUC, and confusion matrix analysis, will be monitored for additional insight into the model's behavior. To ensure robust results, we'll apply sampling methods such as cross-validation to search for the best F1-score.
+For the supervised learning methods, we'll use F1 score as the primary metric for model evaluation. The F1 score balances precision (minimizing false positives) and recall (minimizing false negatives). The F1 score is a balanced approach to identify both types of errors, misclassifying normal traffic (false positive) or missing a true anomoly (false negative), that carry significant impacts. Secondary metrics, such as accuracy, ROC AUC, and confusion matrix analysis, will be monitored for additional insight into the model's behavior. To ensure robust results, we'll apply sampling methods such as cross-validation to search for the best F1-score.
+
+For unsupervised learning methods, we'll use the silhouette score and adjusted rand index (ARI) to measure the performance for our K-Means clustering, gaussian mixture models (GMM), and DBSCAN models. The silhouette score values range from -1 to +1, a higher positive score indicates that the data point fits very well in its own cluster. Secondly, since we have labeled data, the ARI will measure similarity between the predicted clusters and true labels. ARI scores range from -1 to +1 and higher numbers inidicate better results.
 
 ## Model Predictions
 
@@ -442,6 +441,132 @@ The tuned XGBoost model classified network traffic with strong results, achievin
 
 ### Unsupervised Learning Model
 
-The unsupervised machine techniques that we'll be using are K-Means CLustering and Density-Based Spatial Clustering of Applications with Noise (DBSCAN).
+Unsupervised learning methods are essential for discovering hidden patterns and structures in data without relying on labeled outcomes. In network traffic analysis, these techniques can identify unseen anomalies, making them valuable for proactive security monitoring when labeled data isn't accessible. For this project, we apply three unsupervised machine learning algorithms K-Means Clustering, Density-Based Spatial Clustering of Applications with Noise (DBSCAN), and Soft Clustering (Gaussian Mixture Models). By evaluating the clustering results with silhouette score and adjusted rand index metrics, we assess how effectively these models separate normal and anomalous traffic, and compare their strengths and limitations in detecting network threats.
+
+#### Finding Optimal Parameters
+
+Selecting optimal parameters is crucial for the unsupervised learning algorithms we're using in this project. Unlike supervised learning methods, unsupervised models don't have labeled outcomes to guide their learning, performance is heavily reliant on the algorithm parameters. For K-Means, determining the ideal number of clusters ensures meaningful groupings that reflect the underlying data structure. DBSCAN requires tuning of the epsilon (distance threshold) and minimum samples parameters to accurately identify dense regions and outliers. Soft Clustering methods, such as Gaussian Mixture Models, rely on selecting the appropriate number of components to capture the underlying data distribution complexity.
+
+Proper parameter selection improves cluster quality, enhances the ability to detect anomalies, and ensures that the models provide actionable insights for network traffic analysis. To achieve this, we use internal validation metrics like silhouette score and, when labels are available, external metrics such as adjusted rand index to guide our parameter choices. 
+
+Below are the visualizations that identify the optimal parameters:
+
+```{python}
+#| label: unsupervised-optimal-parameters
+#| message: false
+#| echo: false
+
+'''
+For DBSCAN
+Choosing epsilon
+
+using elbow method
+'''
+
+min_samples = 5  # same as you plan to use in DBSCAN
+neighbors = NearestNeighbors(n_neighbors=min_samples)
+neighbors_fit = neighbors.fit(X_train)
+distances, indices = neighbors_fit.kneighbors(X_train)
+
+# Take the k-th NN distance
+distances = np.sort(distances[:, -1])  
+
+# Find the elbow
+kneedle = KneeLocator(range(len(distances)), distances, curve="convex", direction="increasing")
+optimal_eps = distances[kneedle.knee]
+
+
+plt.figure(figsize=(8,5))
+plt.plot(distances)
+plt.axhline(y=optimal_eps, color="red", linestyle="--", label=f"eps = {optimal_eps:.3f}")
+plt.xlabel("Points sorted by distance")
+plt.ylabel(f"{min_samples}-NN distance")
+plt.title("k-distance Graph with Suggested eps")
+plt.legend()
+plt.show()
+
+print(f"Suggested eps: {optimal_eps:.3f}")
+
+'''
+Choosing K-clusters
+
+Important: must scale data
+
+Using Davies-Bouldin Index
+'''
+
+k_values = range(2, 30)
+dbi_scores = []
+
+for k in k_values:
+    kmeans = KMeans(n_clusters=k, random_state=1, n_init=10)
+    labels = kmeans.fit_predict(X_train)   # Use scaled/encoded features
+    dbi = davies_bouldin_score(X_train, labels)
+    dbi_scores.append(dbi)
+
+# Plot DBI
+plt.figure(figsize=(8, 5))
+plt.plot(k_values, dbi_scores, marker='o')
+plt.xlabel("Number of clusters (k)")
+plt.ylabel("Davies-Bouldin Index (DBI)")
+plt.title("Optimal k using Davies-Bouldin Index")
+plt.show()
+
+best_k = k_values[dbi_scores.index(min(dbi_scores))]
+print(f"Optimal number of clusters (lowest DBI): {best_k}")
+
+'''
+Find Best n for GMM
+'''
+
+n_components = range(1, 30)
+bics = []
+aics = []
+
+for n in n_components:
+    gmm = GaussianMixture(n_components=n, 
+                          covariance_type='full', 
+                          random_state=1)
+    gmm.fit(X_train)
+    bics.append(gmm.bic(X_train))
+    aics.append(gmm.aic(X_train))
+
+# Plot BIC and AIC
+plt.figure(figsize=(8, 5))
+plt.plot(n_components, bics, marker='o', label="BIC")
+plt.plot(n_components, aics, marker='s', label="AIC", linestyle="--")
+plt.xlabel("Number of clusters")
+plt.ylabel("Score")
+plt.title("GMM model selection with BIC/AIC")
+plt.legend()
+plt.show()
+
+# Best n_clusters
+best_n = n_components[np.argmin(bics)]
+print("Optimal number of clusters (BIC):", best_n)
+
+```
+
+#### Unsupervised Learning Performance Metrics Analysis
+
+To evaluate the effectiveness of our unsupervised models, we compared both silhouette scores and adjusted rand index (ARI) across DBSCAN, K-Means, and GMM. 
+
+**Silhouette Scores:**  
+- DBSCAN: 0.114  
+- KMeans clustering: 0.414  
+- GMM clustering: 0.307  
+
+**Adjusted Rand Index:**  
+- DBSCAN ARI: 0.242  
+- KMeans ARI: 0.179  
+- GMM ARI: 0.143  
+
+These results show that K-Means achieved the highest silhouette score, indicating more cohesive clusters, while DBSCAN had the highest ARI, suggesting its clusters most closely matched the true anomaly labels. Unsupervised methods did not reach the performance of supervised models, however, they still revealed meaningful structure and potential anomalies within the network traffic data.
 
 ## Conclusion and Insights
+
+After comparing supervised and unsupervised methods, we found that supervised learning (XGBoost) delivered higher accuracy and F1 scores for detecting anomalous network traffic, benefiting from labeled data and feature engineering. The model was able to precisely identify most anomalies, though some recall limitations remained.
+
+Unsupervised methods K-Means, DBSCAN, and GMM proved valuable for discovering hidden patterns and potential anomalies without relying on labels. While their clustering performance was generally lower than supervised models, especially in terms of direct anomaly detection, they offered unique strengths in identifying novel or previously unseen threats and provided insights into the underlying structure of network traffic.
+
+All in all, supervised learning is preferable when high-quality labeled data is available, enabling robust and interpretable anomaly detection. Supervised learning is able to capture the complexity of the network anomoly dataset. Unsupervised methods are essential for proactive monitoring and can complement supervised approaches, especially in dynamic environments where new attack types may emerge. Combining both strategies can lead to more resilient and adaptive network security solutions.
