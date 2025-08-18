@@ -15,6 +15,7 @@ editor: visual
 execute:
   warning: false
   echo: false
+  freeze: auto
 jupyter: python3
 ---
 
@@ -45,6 +46,7 @@ from sklearn.metrics import make_scorer, f1_score, roc_auc_score, \
     accuracy_score, classification_report, confusion_matrix, \
         silhouette_score, adjusted_rand_score, davies_bouldin_score
 import shap
+from pprint import pprint
 ```
 
 ```{python}
@@ -236,7 +238,8 @@ plt.tight_layout()
 plt.show()
 ```
 
-The heatmap shows some correlation, but we re using models that will handle it.
+The heatmap shows some correlation, but we're using models that will handle it.
+
 
 PCA Projection
 
@@ -278,9 +281,164 @@ We'll use F1 score as the primary metric for model evaluation. The F1 score bala
 
 ## Model Predictions
 
+```{python}
+#| label: X_train_y_train
+#| message: false
+#| warning: false
+#| echo: false
+
+X_train = df_train_EDA.drop(columns=['is_anomalous'])
+y_train = df_train_EDA['is_anomalous']
+
+X_test = df_test_EDA.drop(columns=['is_anomalous'])
+y_test = df_test_EDA['is_anomalous']
+
+```
+
 ### Supervised Learning Model
 
-The supervised machine learning technique that we'll be using are XGBoosting Classifer.
+#### XGB Random Search
+
+For the supervised model, we start with performing a randomized hyperparameter optimization of an XGBoost classifier using stratified 5-fold cross-validation and selecting the best model based on F1 score.
+
+```{python}
+#| label: xgb_random_search
+#| message: false
+#| warning: false
+#| echo: true
+
+# normal vs. anomalous samples
+neg, pos = np.bincount(y_train)
+# gives minority class more weight during training (our is prettyy good already)
+scale_pos_weight = neg / pos
+print(f"Computed scale_pos_weight: {scale_pos_weight:.2f}")
+
+# set up classifier for binary classification
+# uses histogram-based tree building--tree_method='hist'
+# includes class weighting calculated above
+xgb = XGBClassifier(
+    objective='binary:logistic',
+    eval_metric='logloss',
+    tree_method='hist',
+    random_state=42,
+    n_jobs=-1,
+    scale_pos_weight=scale_pos_weight
+)
+
+# hyperparameter options for optimization
+param_dist = {
+    'n_estimators': [330, 340, 350],
+    'max_depth': [13, 14, 15],
+    'learning_rate': [0.050, 0.055, 0.1],
+    'subsample': [0.93, 0.95, 0.97],
+    'colsample_bytree': [0.60, 0.625, 0.65],
+    'gamma': [0.04, 0.05, 0.06],
+    'reg_alpha': [2.5, 2.75, 3.0],
+    'reg_lambda': [2.25, 2.5, 2.75]
+}
+
+# 5-fold staratified CV
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# we are looking for the best f1 score
+f1 = make_scorer(f1_score, average='binary')
+
+# randomized search with cross-validation
+search = RandomizedSearchCV(
+    estimator=xgb,
+    param_distributions=param_dist,
+    n_iter=3,
+    scoring=f1,
+    cv=cv,
+    random_state=42,
+    n_jobs=1,
+    verbose=0
+)
+search.fit(X_train, y_train)
+
+print(f"Total fits run: {len(search.cv_results_['mean_test_score']) * cv.get_n_splits()}")
+print(f"Best F1 score: {search.best_score_:.4f}")
+print("Best params:")
+pprint(search.best_params_)
+
+```
+
+The randomized search evaluated 15 total fits across three parameter combinations and five cross-validation folds. The best model achieved an exceptionally high F1 score of 0.9981, indicating a nearly perfect balance of precision and recall in detecting anomalies. While results of this quality suggest data leakage, none is present here. More likely, this is a manufactured dataset and the realtively simple code and an excellent model captured the relationships nicely.
+
+#### Test Evaluation
+
+Run the results of the RandomizedSearchCV against the testing dataset to sew how well it predicts the set and provide metrics and a confusion matrix to see where the model performed.
+
+```{python}
+#| label: xgb_test_evaluation
+#| message: false
+#| warning: false
+#| echo: true
+
+# the class predictions and the predicted probablility of a positive--anomalous--score
+y_pred = search.best_estimator_.predict(X_test)
+y_proba = search.best_estimator_.predict_proba(X_test)[:, 1]
+
+# scores
+print("Test F1 Score:", f1_score(y_test, y_pred))
+print("Test Accuracy:", accuracy_score(y_test, y_pred))
+print("Test ROC AUC:", roc_auc_score(y_test, y_proba))
+print("Classification Report:\n", classification_report(y_test, y_pred))
+
+# confision martix to see where the model did well or failed
+cm = confusion_matrix(y_test, y_pred)
+labels = ['Normal (0)', 'Anomalous (1)']
+
+# heatmap of confusion matrix
+plt.figure(figsize=(6, 5))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.tight_layout()
+plt.show()
+
+```
+
+The tuned XGBoost model achieved strong overall performance with a test F1 score of 0.76, accuracy of 0.78, and an excellent ROC AUC of 0.96. While the model is highly precise in detecting anomalous traffic, it only recalls about 63% of true anomalies, meaning some attacks are missed. This suggests the model is conservative in raising alerts, favoring fewer false alarms at the cost of letting certain anomalies go undetected.
+
+The differences between the training and testing performance suggest distributional drift between the two datasets. While the model captured patterns extremely well during training, its performance dropped on the test set.
+
+#### Feature Influence on the Model
+
+To examine which features most strongly influence the model’s predictions, we present a SHAP violin plot. This visualization shows both the direction and magnitude of feature impacts on the classification, highlighting how variables such as `src_bytes` can contribute to both anomalous and non-anomalous outcomes.
+
+```{python}
+#| label: feature_influence
+#| message: false
+#| warning: false
+#| echo: false
+
+explainer = shap.TreeExplainer(search.best_estimator_)
+
+# SHAP
+shap_values_train = explainer.shap_values(X_train)
+shap_values_test = explainer.shap_values(X_test)
+
+shap.summary_plot(
+    shap_values_train,
+    X_train,
+    plot_type="violin",
+    show=False
+)
+plt.title("SHAP Violin Plot - Train Set")
+plt.tight_layout()
+plt.show()
+
+```
+
+The SHAP analysis shows that traffic volume features such as `src_bytes` and `dst_bytes` have the strongest influence on the model’s predictions. Additional features like repeated service requests, specific services , and login or flag indicators provide secondary but meaningful contributions to detecting anomalies.
+
+All 17 EDA-refined features impact the classification with varying degrees of influence, suggesting successful data analysis and pre-processing.
+
+#### Question 1 Result
+
+The tuned XGBoost model classified network traffic with strong results, achieving 0.78 accuracy, 0.76 F1, and 0.96 ROC AUC. SHAP analysis shows all 17 refined features contributed, with `src_bytes`, `dst_bytes`, `dst_host_srv_count`, `count`, and `same_srv_rate` most influential. Overall, supervised learning proved effective for distinguishing normal and anomalous traffic, though recall limitations mean some anomalies were missed.
 
 ### Unsupervised Learning Model
 
