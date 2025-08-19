@@ -51,13 +51,21 @@ mtcars['speed'] = mtcars['horsepower'] / mtcars['weight']
 penguins = sns.load_dataset('penguins').dropna()
 ```
 
-# Using Quarto for presentations
+# My Title
 
-## Quarto
+## Overview
 
--   The presentation is created using the Quarto CLI
+- Research Questions and Dataset
 
--   `##` sets the start of a new slide
+- EDA and preprocessing
+
+- Supervised Learning Modeling
+
+- Unsupervised Learning Modeling
+
+- Feature Importance
+
+- Summary
 
 ## Layouts
 
