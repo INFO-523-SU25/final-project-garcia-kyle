@@ -105,9 +105,9 @@ import seaborn as sns
 <span style="font-size: 32px;">
 - SHAP explains how each feature contributes to predictions  
 - Bars show average impact on model output  
-  - `src_bytes` and `dst_bytes` → traffic volume dominates  
-  - `count` → repeated connections are strong signals  
-  - `dst_host_srv_count` and `dst_host_same_src_port_rate` → service-level patterns 
+  - `src_bytes` and `dst_bytes` => traffic volume dominates  
+  - `count` => repeated connections are strong signals  
+  - `dst_host_srv_count` and `dst_host_same_src_port_rate` => service-level patterns 
 </span> 
 
 ![](artifacts/SHAP_Bar.png){fig-align="center" width="70%"}
@@ -119,9 +119,9 @@ import seaborn as sns
 - Goal: detect anomalies without labels  
 - Evaluated with silhouette score + Adjusted Rand Index (ARI)  
 - Results:  
-  - K-Means → best cohesion (Silhouette = 0.414)  
-  - DBSCAN → closest to ground truth (ARI = 0.242)  
-  - GMM → moderate on both metrics  
+  - K-Means => best cohesion (Silhouette = 0.414)  
+  - DBSCAN => closest to ground truth (ARI = 0.242)  
+  - GMM => moderate on both metrics  
 - Overall weaker than supervised, but reveal useful structure
 </span>
 
@@ -129,7 +129,7 @@ import seaborn as sns
 
 <span style="font-size: 32px;">
 - Top drivers overlap with supervised:  
-  - `src_bytes`, `dst_bytes` → traffic volume  
+  - `src_bytes`, `dst_bytes` => traffic volume  
 - Unsupervised also emphasizes service-level diversity:  
   - `dst_host_srv_diff_host_rate`  
   - `diff_srv_rate`  
@@ -142,7 +142,7 @@ import seaborn as sns
 ![](artifacts/top_features_compare.png){fig-align="center" width="60%"}
 
 <span style="font-size: 32px;">
-- Supervised (XGBoost + SHAP): traffic volume → `src_bytes`, `dst_bytes`  
+- Supervised (XGBoost + SHAP): traffic volume => `src_bytes`, `dst_bytes`  
 - Unsupervised (K-Means, GMM): also capture service-level rates  
 - Overlap = consistent signals across methods  
 - Differences = clustering adds variation missed by supervised  
