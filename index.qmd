@@ -563,6 +563,34 @@ To evaluate the effectiveness of our unsupervised models, we compared both silho
 
 These results show that K-Means achieved the highest silhouette score, indicating more cohesive clusters, while DBSCAN had the highest ARI, suggesting its clusters most closely matched the true anomaly labels. Unsupervised methods did not reach the performance of supervised models, however, they still revealed meaningful structure and potential anomalies within the network traffic data.
 
+#### Unsupervised learning Feature Importance
+
+The top features identified by both K-Means and GMM match the most influential features found in the supervised XGBoost model. In supervised learning, SHAP analysis also highlighted `src_bytes`, `dst_bytes`, and connection rate features as key drivers for distinguishing normal and anomalous traffic.
+
+The similarity demonstrates that both supervised and unsupervised methods are capturing the same underlying patterns in the network data. The consistency in feature importance across modeling approaches suggests these variables are fundamental indicators of network anomalies, regardless of whether labels are available. This strengthens confidence in the reliability and interpretability of the results, and shows that unsupervised models can surface meaningful insights even without explicit supervision.
+
+Top 5 Feature Importances for K-Means Clustering
+
+| Feature                     | Importance  |
+|-----------------------------|-------------|
+| dst_bytes                   | 74.87       |
+| src_bytes                   | 51.91       |
+| dst_host_srv_diff_host_rate | 2.00        |
+| diff_srv_rate               | 1.52        |
+| dst_host_diff_srv_rate      | 1.46        |
+
+Top 5 Feature Importances for Gaussian Mixture Model (GMM)
+
+| Feature                     | Importance  |
+|-----------------------------|-------------|
+| dst_bytes                   | 61.53       |
+| src_bytes                   | 42.74       |
+| dst_host_srv_diff_host_rate | 1.46        |
+| dst_host_diff_srv_rate      | 1.33        |
+| diff_srv_rate               | 1.20        |
+
+
+
 ## Conclusion and Insights
 
 After comparing supervised and unsupervised methods, we found that supervised learning (XGBoost) delivered higher accuracy and F1 scores for detecting anomalous network traffic, benefiting from labeled data and feature engineering. The model was able to precisely identify most anomalies, though some recall limitations remained.
