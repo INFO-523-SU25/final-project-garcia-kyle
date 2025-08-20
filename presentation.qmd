@@ -9,7 +9,7 @@ subtitle: |
 
 author: "\ **Project by Joey Garcia & David Kyle**"
 title-slide-attributes:
-  data-background-image: artifacts/sec4.jpg
+  data-background-image: images/sec4.jpg
   data-background-size: stretch
   data-background-opacity: "0.3"
   data-slide-number: none
@@ -65,11 +65,11 @@ import seaborn as sns
 
 ::::: columns
 ::: {.column width="50%"}
-![](artifacts/Attack_types.png){fig-align="center" width="100%"}
+![](images/Attack_types.png){fig-align="center" width="100%"}
 :::
 
 ::: {.column width="50%"}
-![](artifacts/normal_v_anom.png){fig-align="center" width="100%"}
+![](images/normal_v_anom.png){fig-align="center" width="100%"}
 :::
 :::::
 
@@ -77,7 +77,7 @@ import seaborn as sns
 
 [**Process to prepare features**]{style="font-size: 32px;"}
 
-![](artifacts/EDA.png){fig-align="center" width="70%"}
+![](images/EDA.png){fig-align="center" width="70%"}
 
 ## Supervised Learning (XGBoost)
 
@@ -97,7 +97,7 @@ import seaborn as sns
 :::
 
 ::: {.column width="47%"}
-![](artifacts/confusion.png){fig-align="center" width="90%"}
+![](images/confusion.png){fig-align="center" width="90%"}
 :::
 :::::
 
@@ -129,7 +129,7 @@ import seaborn as sns
 
 ## Comparing Top Features
 
-![](artifacts/top_features_compare.png){fig-align="center" width="60%"}
+![](images/top_features_compare.png){fig-align="center" width="60%"}
 
 [**Methods:**\
 - Supervised (XGBoost): SHAP values explain feature importance\
