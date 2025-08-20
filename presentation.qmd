@@ -1,7 +1,13 @@
 ---
 title: "Packet Traffic Learning"
-subtitle: "INFO 523 - Summer 2025 - Final Project"
-author: "Joey Garcia & David Kyle"
+subtitle: |
+  INFO 523 - Summer 2025 - Final Project
+
+  “Life isn’t chess, a game of perfect information, one that can in theory be “solved.” It’s poker, a game where you’re trying to make the best decisions using the limited information you have.”
+
+  ― Tom Chivers, Everything Is Predictable: How Bayesian Statistics Explain Our World
+
+author: "\ **Project by Joey Garcia & David Kyle**"
 title-slide-attributes:
   data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
   data-background-size: stretch
@@ -27,48 +33,42 @@ import seaborn as sns
 
 ```
 
-
 ## The Problem
 
-**What are we solving?**  
-<span style="font-size: 35px;">Can we detect anomalous network traffic using supervised and unsupervised machine learning?</span>
+**What are we solving?**\
+[Can we detect anomalous network traffic using supervised and unsupervised machine learning?]{style="font-size: 28px;"}
 
-::::: columns
-::: {.column width="70%"}
-**Why does it matter?**  
-<span style="font-size: 35px;">
-- Network attacks are increasingly sophisticated and harder to detect  
-- Faster, more accurate anomaly detection strengthens cybersecurity  
-- Comparing supervised vs. unsupervised methods reveals complementary insights  
-</span>
-:::
-:::::
+**Why does it matter?**\
+[- Network attacks are increasingly sophisticated and harder to detect\
+- Faster, more accurate anomaly detection strengthens cybersecurity\
+- Comparing supervised vs. unsupervised methods reveals complementary insights\
+]{style="font-size: 28px;"}
+
 
 ## The Data
 
-- **Source:** <span style="font-size: 35px;">NSL-KDD Intrusion Detection Dataset (Kaggle)</span>  
-- **Size:** <span style="font-size: 35px;">125,972 training rows · 22,543 testing rows · 43 features</span>  
-- **Key Features Used:** <span style="font-size: 30px;">
-  - src_bytes, dst_bytes (traffic volume)  
-  - same_srv_rate, diff_srv_rate (service diversity e.g., HTTP, FTP, Telnet)  
-  - count, dst_host_srv_count (connection counts)  
-  - logged_in, flag_SF (status indicators)  
-  - service_http, service_private (protocol dummies)  
-</span> 
+-   **Source:** [NSL-KDD Intrusion Detection Dataset (Kaggle)]{style="font-size: 35px;"}\
+-   **Size:** [125,972 training rows · 22,543 testing rows · 43 features]{style="font-size: 35px;"}\
+-   **Key Features Used:** <span style="font-size: 30px;">
+    -   src_bytes, dst_bytes (traffic volume)\
+    -   same_srv_rate, diff_srv_rate (service diversity e.g., HTTP, FTP, Telnet)\
+    -   count, dst_host_srv_count (connection counts)\
+    -   logged_in, flag_SF (status indicators)\
+    -   service_http, service_private (protocol dummies)\
+        </span>
 
 ## Target Engineering
 
-<span style="font-size: 32px;">
-- Original dataset contained **multiple attack types**  
-- Collapsed into a binary column: **is_anomalous**  
-  - 0 = normal traffic, 1 = attack (any type)  
-- Provides a clear target for supervised and unsupervised learning
-</span>
+[- Original dataset contained **multiple attack types**\
+- Collapsed into a binary column: **is_anomalous**\
+- 0 = normal traffic, 1 = attack (any type)\
+- Provides a clear target for supervised and unsupervised learning]{style="font-size: 32px;"}
 
 ::::: columns
 ::: {.column width="50%"}
 ![](artifacts/Attack_types.png){fig-align="center" width="100%"}
 :::
+
 ::: {.column width="50%"}
 ![](artifacts/normal_v_anom.png){fig-align="center" width="100%"}
 :::
@@ -76,96 +76,82 @@ import seaborn as sns
 
 ## EDA and Preprocessing
 
-<span style="font-size: 32px;"> 
-**Process to preapare features** 
-</span>
+[**Process to prepare features**]{style="font-size: 32px;"}
 
 ![](artifacts/EDA.png){fig-align="center" width="70%"}
 
 ## Supervised Learning (XGBoost)
 
-<span style="font-size: 32px;">
-- Accuracy: ~78% · ROC AUC: 0.96 · F1: 0.76  
-- Strong precision for anomalies: 0.97  
-- Recall weaker for anomalies: 0.63 => some attacks missed  
-- Conservative model: low false positives, higher false negatives
-</span>
+[- **Recall weaker** for anomalies: 0.63 =\> some attacks missed\
+- **Conservative model**: low false positives, higher false negatives\
+**Best training F1-score: \~99.81% & Test F1-score: 0.79**\
+- **Data Drift** implications from new cyber attack methods\
+]{style="font-size: 28px;"}
 
 ::::: columns
 ::: {.column width="47%"}
 ![](artifacts/metrics.png){fig-align="center" width="80%"}
 :::
+
 ::: {.column width="53%"}
 ![](artifacts/confusion2.png){fig-align="center" width="90%"}
 :::
 :::::
 
-## Feature Importance (SHAP)
-
-<span style="font-size: 32px;">
-- SHAP explains how each feature contributes to predictions  
-- Bars show average impact on model output  
-  - `src_bytes` and `dst_bytes` => traffic volume dominates  
-  - `count` => repeated connections are strong signals  
-  - `dst_host_srv_count` and `dst_host_same_src_port_rate` => service-level patterns 
-</span> 
-
-![](artifacts/SHAP_Bar.png){fig-align="center" width="70%"}
-
 ## Unsupervised Learning Modeling
 
-<span style="font-size: 32px;">
-- Models: **K-Means, DBSCAN, Gaussian Mixture (GMM)**  
-- Goal: detect anomalies without labels  
-- Evaluated with silhouette score + Adjusted Rand Index (ARI)  
-- Results:  
-  - K-Means => best cohesion (Silhouette = 0.414)  
-  - DBSCAN => closest to ground truth (ARI = 0.242)  
-  - GMM => moderate on both metrics  
-- Overall weaker than supervised, but reveal useful structure
-</span>
+[
+**Models**: **K-Means, DBSCAN, Gaussian Mixture (GMM)**\
+**Goal**: detect anomalies without labels\
+**Evaluation Metrics**: silhouette score + Adjusted Rand Index (ARI)
+]{style="font-size: 24px;"}
 
-## Feature Importance
+::::: columns
+::: {.column width="55%"}
+[
+**Silhouette Scores:**\
+- DBSCAN: 0.114\
+- KMeans: 0.414 (Best cluster cohesion)\
+- GMM: 0.307\
+**Adjusted Rand Index:**\
+- DBSCAN: 0.242 (Closest match to ground truth)\
+- KMeans: 0.179\
+- GMM: 0.143 (Moderate on both metrics)\
+]{style="font-size: 22px;"}
+:::
 
-<span style="font-size: 32px;">
-- Top drivers overlap with supervised:  
-  - `src_bytes`, `dst_bytes` => traffic volume  
-- Unsupervised also emphasizes service-level diversity:  
-  - `dst_host_srv_diff_host_rate`  
-  - `diff_srv_rate`  
-  - `dst_host_diff_srv_rate`  
-- Shows anomalies can also be detected by unusual service/connection patterns
-</span>
+::: {.column width="45%"}
+[**Conclusion**\
+- Unsupervised models are less accurate than supervised methods\
+- **K-Means** excels at forming tight clusters\
+- DBSCAN is best at matching true anomalies\
+- GMM balances both\
+- Insights may help uncover new threats and support proactive network defense
+]{style="font-size: 22px;"}
+:::
+:::::
 
 ## Comparing Top Features
 
 ![](artifacts/top_features_compare.png){fig-align="center" width="60%"}
 
-<span style="font-size: 32px;">
-- Supervised (XGBoost + SHAP): traffic volume => `src_bytes`, `dst_bytes`  
-- Unsupervised (K-Means, GMM): also capture service-level rates  
-- Overlap = consistent signals across methods  
-- Differences = clustering adds variation missed by supervised  
-**Takeaway → Traffic volume dominates, but clustering reveals service-level patterns**
-</span>
-
-
-
-## Feature Definitions
-<span style="font-size: 32px;">
-To interpret the feature rankings, here’s what the column names mean.  
-In this dataset, **service** refers to the network application protocol (e.g., HTTP, FTP, Telnet).
-</span>
-
-![](artifacts/column_descriptions.png){fig-align="center" width="70%"}
+[**Methods:**\
+  - Supervised (XGBoost): SHAP values explain feature importance\
+  - Unsupervised (K-Means, GMM): analyzing variation of feature values across clusters centers\
+**Takeaway:**\
+- consistent features `src_bytes` and `dst_bytes`\
+- different influential service-level rates\
+- both are inluenced differently by varying service-level rates]{style="font-size: 24px;"}
 
 ## Summary
 
-<span style="font-size: 32px;">
-- **Supervised (XGBoost):** high precision, conservative, some anomalies missed  
-- **Unsupervised (K-Means, GMM):** weaker overall, but reveal service-level patterns  
-- **Feature overlap:** traffic volume (`src_bytes`, `dst_bytes`) consistently dominant across methods  
-- **Shared insight:** traffic volume dominates across methods  
-- **Takeaway:** hybrid approaches can boost resilience in anomaly detection  
-</span>
-
+[
+**Supervised (XGBoost):** high f1-score and some anomalies missed (False positives)\
+**Unsupervised (K-Means, GMM):** weaker overall, but reveal different service-level patterns\
+\
+**Takeaways:**\
+- **Feature overlap:** traffic volume (`src_bytes`, `dst_bytes`) dominant across methods\
+- **Data Drift:** F1-score highlights train (f1=~98%) and test (f1=~70%) performance metrics\
+- **Effective Practices:** A well-rounded approach would be to use both unsupervised and supervised methods\
+- **Continued Research:** As attackers evolve, models must adapt. Ongoing monitoring and retraining are essential to address data drift and maintain strong network defenses.
+]{style="font-size: 28px;"}
