@@ -6,6 +6,8 @@ Final project repo for INFO 523 - Summer 2025.
 
 Full analysis, write-up, and presentation is [here](https://info-523-su25.github.io/final-project-garcia-kyle/)
 
+Project Presentation ([in Panopto](https://arizona.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=bc02ea9a-619c-44ba-b029-b33f002ff62c))
+
 ## Team
 
 The Anomalists 
