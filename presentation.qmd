@@ -82,19 +82,24 @@ import seaborn as sns
 
 ## Supervised Learning (XGBoost)
 
+::::: columns
+::: {.column width="53%"}
+
 [- **Recall weaker** for anomalies: 0.63 =\> some attacks missed\
 - **Conservative model**: low false positives, higher false negatives\
-**Best training F1-score: \~99.81% & Test F1-score: 0.79**\
+**Training F1-score: \~99.81%**\
+**Test F1-score: \~76%**\
 - **Data Drift** implications from new cyber attack methods\
 ]{style="font-size: 28px;"}
 
-::::: columns
-::: {.column width="47%"}
-![](artifacts/metrics.png){fig-align="center" width="80%"}
+[**Attack Types:**\
+  - Training contains 22\
+  - Testing contains 17 original + 21 new attacks\
+]{style="font-size: 28px;"}
 :::
 
-::: {.column width="53%"}
-![](artifacts/confusion2.png){fig-align="center" width="90%"}
+::: {.column width="47%"}
+![](artifacts/confusion.png){fig-align="center" width="90%"}
 :::
 :::::
 
@@ -148,7 +153,7 @@ import seaborn as sns
 \
 **Takeaways:**\
 - **Feature overlap:** traffic volume (`src_bytes`, `dst_bytes`) dominant across methods\
-- **Data Drift:** F1-score highlights train (f1=~98%) and test (f1=~70%) performance metrics\
+- **Data Drift:** F1-score highlights train (f1=~99%) and test (f1=~76%) performance metrics\
 - **Effective Practices:** A well-rounded approach would be to use both unsupervised and supervised methods\
 - **Continued Research:** As attackers evolve, models must adapt. Ongoing monitoring and retraining are essential to address data drift and maintain strong network defenses.
 ]{style="font-size: 28px;"}
