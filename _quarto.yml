@@ -14,7 +14,7 @@ website:
       - text: Proposal
         href: proposal.qmd
       - text: Analysis
-        href: analysis.ipynb
+        href: notebooks/analysis.ipynb
       - text: Presentation
         href: presentation.qmd
       - text: About
