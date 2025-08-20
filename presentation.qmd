@@ -9,9 +9,9 @@ subtitle: |
 
 author: "\ **Project by Joey Garcia & David Kyle**"
 title-slide-attributes:
-  data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
+  data-background-image: artifacts/sec4.jpg
   data-background-size: stretch
-  data-background-opacity: "0.7"
+  data-background-opacity: "0.3"
   data-slide-number: none
 format:
   revealjs:
@@ -43,7 +43,6 @@ import seaborn as sns
 - Faster, more accurate anomaly detection strengthens cybersecurity\
 - Comparing supervised vs. unsupervised methods reveals complementary insights\
 ]{style="font-size: 28px;"}
-
 
 ## The Data
 
@@ -84,7 +83,6 @@ import seaborn as sns
 
 ::::: columns
 ::: {.column width="53%"}
-
 [- **Recall weaker** for anomalies: 0.63 =\> some attacks missed\
 - **Conservative model**: low false positives, higher false negatives\
 **Training F1-score: \~99.81%**\
@@ -93,8 +91,8 @@ import seaborn as sns
 ]{style="font-size: 28px;"}
 
 [**Attack Types:**\
-  - Training contains 22\
-  - Testing contains 17 original + 21 new attacks\
+- Training contains 22\
+- Testing contains 17 original + 21 new attacks\
 ]{style="font-size: 28px;"}
 :::
 
@@ -105,16 +103,13 @@ import seaborn as sns
 
 ## Unsupervised Learning Modeling
 
-[
-**Models**: **K-Means, DBSCAN, Gaussian Mixture (GMM)**\
+[**Models**: **K-Means, DBSCAN, Gaussian Mixture (GMM)**\
 **Goal**: detect anomalies without labels\
-**Evaluation Metrics**: silhouette score + Adjusted Rand Index (ARI)
-]{style="font-size: 24px;"}
+**Evaluation Metrics**: silhouette score + Adjusted Rand Index (ARI)]{style="font-size: 24px;"}
 
 ::::: columns
 ::: {.column width="55%"}
-[
-**Silhouette Scores:**\
+[**Silhouette Scores:**\
 - DBSCAN: 0.114\
 - KMeans: 0.414 (Best cluster cohesion)\
 - GMM: 0.307\
@@ -128,8 +123,7 @@ import seaborn as sns
 ::: {.column width="45%"}
 [**Conclusion**\
 - Unsupervised models are less accurate than supervised methods\
-- Insights may help uncover new threats and support proactive network defense
-]{style="font-size: 22px;"}
+- Insights may help uncover new threats and support proactive network defense]{style="font-size: 22px;"}
 :::
 :::::
 
@@ -138,8 +132,8 @@ import seaborn as sns
 ![](artifacts/top_features_compare.png){fig-align="center" width="60%"}
 
 [**Methods:**\
-  - Supervised (XGBoost): SHAP values explain feature importance\
-  - Unsupervised (K-Means, GMM): analyzing variation of feature values across clusters centers\
+- Supervised (XGBoost): SHAP values explain feature importance\
+- Unsupervised (K-Means, GMM): analyzing variation of feature values across clusters centers\
 **Takeaway:**\
 - consistent features `src_bytes` and `dst_bytes`\
 - different influential service-level rates\
@@ -147,13 +141,11 @@ import seaborn as sns
 
 ## Summary
 
-[
-**Supervised (XGBoost):** high f1-score and some anomalies missed (False positives)\
+[**Supervised (XGBoost):** high f1-score and some anomalies missed (False positives)\
 **Unsupervised (K-Means, GMM):** weaker overall, but reveal different service-level patterns\
 \
 **Takeaways:**\
 - **Feature overlap:** traffic volume (`src_bytes`, `dst_bytes`) dominant across methods\
-- **Data Drift:** F1-score highlights train (f1=~99%) and test (f1=~76%) performance metrics\
+- **Data Drift:** F1-score highlights train (f1=\~99%) and test (f1=\~76%) performance metrics\
 - **Effective Practices:** A well-rounded approach would be to use both unsupervised and supervised methods\
-- **Continued Research:** As attackers evolve, models must adapt. Ongoing monitoring and retraining are essential to address data drift and maintain strong network defenses.
-]{style="font-size: 28px;"}
+- **Continued Research:** As attackers evolve, models must adapt. Ongoing monitoring and retraining are essential to address data drift and maintain strong network defenses.]{style="font-size: 28px;"}
