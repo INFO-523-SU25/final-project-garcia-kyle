@@ -9,8 +9,8 @@
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.7.32">
 
-  <meta name="author" content="Author names">
-  <title>Packet Traffic Learning – Project title</title>
+  <meta name="author" content="Project by Joey Garcia &amp; David Kyle">
+  <title>Packet Traffic Learning</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -126,382 +126,147 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-image="images/watercolour_sys02_img34_teacup-ocean.jpg" data-background-opacity="0.7" data-background-size="stretch" data-slide-number="none" class="quarto-title-block center">
-  <h1 class="title">Project title</h1>
-  <p class="subtitle">INFO 523 - Summer 2025 - Final Project</p>
+<section id="title-slide" data-background-image="artifacts/sec4.jpg" data-background-opacity="0.3" data-background-size="stretch" data-slide-number="none" class="quarto-title-block center">
+  <h1 class="title">Packet Traffic Learning</h1>
+  <p class="subtitle"></p><p>INFO 523 - Summer 2025 - Final Project</p>
+<p>“Life isn’t chess, a game of perfect information, one that can in theory be “solved.” It’s poker, a game where you’re trying to make the best decisions using the limited information you have.”</p>
+<p>― Tom Chivers, Everything Is Predictable: How Bayesian Statistics Explain Our World</p><p></p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Author names 
+<strong>Project by Joey Garcia &amp; David Kyle</strong> 
 </div>
 </div>
 </div>
 
 </section>
-<section>
-<section id="using-quarto-for-presentations" class="title-slide slide level1 center">
-<h1>Using Quarto for presentations</h1>
-
+<section id="the-problem" class="slide level2">
+<h2>The Problem</h2>
+<p><strong>What are we solving?</strong><br>
+<span style="font-size: 28px;">Can we detect anomalous network traffic using supervised and unsupervised machine learning?</span></p>
+<p><strong>Why does it matter?</strong><br>
+<span style="font-size: 28px;">- Network attacks are increasingly sophisticated and harder to detect<br>
+- Faster, more accurate anomaly detection strengthens cybersecurity<br>
+- Comparing supervised vs.&nbsp;unsupervised methods reveals complementary insights<br>
+</span></p>
 </section>
-<section id="quarto" class="slide level2">
-<h2>Quarto</h2>
+<section id="the-data" class="slide level2">
+<h2>The Data</h2>
 <ul>
-<li><p>The presentation is created using the Quarto CLI</p></li>
-<li><p><code>##</code> sets the start of a new slide</p></li>
+<li><strong>Source:</strong> <span style="font-size: 35px;">NSL-KDD Intrusion Detection Dataset (Kaggle)</span><br>
+</li>
+<li><strong>Size:</strong> <span style="font-size: 35px;">125,972 training rows · 22,543 testing rows · 43 features</span><br>
+</li>
+<li><strong>Key Features Used:</strong> <span style="font-size: 30px;">
+<ul>
+<li>src_bytes, dst_bytes (traffic volume)<br>
+</li>
+<li>same_srv_rate, diff_srv_rate (service diversity e.g., HTTP, FTP, Telnet)<br>
+</li>
+<li>count, dst_host_srv_count (connection counts)<br>
+</li>
+<li>logged_in, flag_SF (status indicators)<br>
+</li>
+<li>service_http, service_private (protocol dummies)<br>
+</li>
+</ul></span></li>
 </ul>
 </section>
-<section id="layouts" class="slide level2">
-<h2>Layouts</h2>
-<p>You can use plain text</p>
-<div class="columns">
-<div class="column" style="width:40%;">
-<ul>
-<li>or bullet points<sup>1</sup></li>
-</ul>
-</div><div class="column" style="width:60%;">
-<p>or in two columns</p>
-</div></div>
-<ul>
-<li><p>like</p></li>
-<li><p>this</p></li>
-</ul>
-<aside><ol class="aside-footnotes"><li id="fn1"><p>And add footnotes</p></li></ol></aside></section>
-<section id="code" class="slide level2">
-<h2>Code</h2>
-<div id="c0ee14ca" class="cell" data-execution_count="4">
-<div class="cell-output cell-output-stdout">
-<pre><code>                            OLS Regression Results                            
-==============================================================================
-Dep. Variable:                    mpg   R-squared:                       0.073
-Model:                            OLS   Adj. R-squared:                  0.070
-Method:                 Least Squares   F-statistic:                     30.59
-Date:                Fri, 01 Aug 2025   Prob (F-statistic):           5.84e-08
-Time:                        22:35:55   Log-Likelihood:                -1346.4
-No. Observations:                 392   AIC:                             2697.
-Df Residuals:                     390   BIC:                             2705.
-Df Model:                           1                                         
-Covariance Type:            nonrobust                                         
-==============================================================================
-                 coef    std err          t      P&gt;|t|      [0.025      0.975]
-------------------------------------------------------------------------------
-const         35.8015      2.266     15.800      0.000      31.347      40.257
-speed       -354.7055     64.129     -5.531      0.000    -480.788    -228.623
-==============================================================================
-Omnibus:                       27.687   Durbin-Watson:                   0.589
-Prob(Omnibus):                  0.000   Jarque-Bera (JB):               18.976
-Skew:                           0.420   Prob(JB):                     7.57e-05
-Kurtosis:                       2.323   Cond. No.                         169.
-==============================================================================
-
-Notes:
-[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</code></pre>
-</div>
-</div>
-</section>
-<section id="plots" class="slide level2">
-<h2>Plots</h2>
-<div id="468da528" class="cell" data-execution_count="5">
-<div class="cell-output cell-output-display">
-<div>
-<figure>
-<p><img data-src="presentation_files/figure-revealjs/cell-6-output-1.png" width="1673" height="1070"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="plot-and-text" class="slide level2">
-<h2>Plot and text</h2>
+<section id="target-engineering" class="slide level2">
+<h2>Target Engineering</h2>
+<p><span style="font-size: 32px;">- Original dataset contained <strong>multiple attack types</strong><br>
+- Collapsed into a binary column: <strong>is_anomalous</strong><br>
+- 0 = normal traffic, 1 = attack (any type)<br>
+- Provides a clear target for supervised and unsupervised learning</span></p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<ul>
-<li><p>Some text</p></li>
-<li><p>goes here</p></li>
-</ul>
-</div><div class="column" style="width:50%;">
-<div id="aaf2be64" class="cell" data-fig.width="5.5" data-execution_count="6">
-<div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="presentation_files/figure-revealjs/cell-7-output-1.png" width="1585" height="998"></p>
+<p><img data-src="artifacts/Attack_types.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="artifacts/normal_v_anom.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
 </div>
 </div></div>
-</section></section>
-<section>
-<section id="a-new-section" class="title-slide slide level1 center">
-<h1>A new section…</h1>
-
 </section>
-<section id="tables" class="slide level2">
-<h2>Tables</h2>
-<p>If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,</p>
-<div id="c71120b8" class="cell" data-execution_count="7">
-<div class="cell-output cell-output-display" data-execution_count="7">
-<table border="1" class="dataframe">
-
-<thead>
-
-<tr style="text-align: right;">
-
-<th>
-</th>
-
-<th>
-species
-</th>
-
-<th>
-island
-</th>
-
-<th>
-bill_length_mm
-</th>
-
-<th>
-bill_depth_mm
-</th>
-
-<th>
-flipper_length_mm
-</th>
-
-<th>
-body_mass_g
-</th>
-
-<th>
-sex
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<th>
-0
-</th>
-
-<td>
-Adelie
-</td>
-
-<td>
-Torgersen
-</td>
-
-<td>
-39.1
-</td>
-
-<td>
-18.7
-</td>
-
-<td>
-181.0
-</td>
-
-<td>
-3750.0
-</td>
-
-<td>
-Male
-</td>
-
-</tr>
-
-<tr>
-
-<th>
-1
-</th>
-
-<td>
-Adelie
-</td>
-
-<td>
-Torgersen
-</td>
-
-<td>
-39.5
-</td>
-
-<td>
-17.4
-</td>
-
-<td>
-186.0
-</td>
-
-<td>
-3800.0
-</td>
-
-<td>
-Female
-</td>
-
-</tr>
-
-<tr>
-
-<th>
-2
-</th>
-
-<td>
-Adelie
-</td>
-
-<td>
-Torgersen
-</td>
-
-<td>
-40.3
-</td>
-
-<td>
-18.0
-</td>
-
-<td>
-195.0
-</td>
-
-<td>
-3250.0
-</td>
-
-<td>
-Female
-</td>
-
-</tr>
-
-<tr>
-
-<th>
-4
-</th>
-
-<td>
-Adelie
-</td>
-
-<td>
-Torgersen
-</td>
-
-<td>
-36.7
-</td>
-
-<td>
-19.3
-</td>
-
-<td>
-193.0
-</td>
-
-<td>
-3450.0
-</td>
-
-<td>
-Female
-</td>
-
-</tr>
-
-<tr>
-
-<th>
-5
-</th>
-
-<td>
-Adelie
-</td>
-
-<td>
-Torgersen
-</td>
-
-<td>
-39.3
-</td>
-
-<td>
-20.6
-</td>
-
-<td>
-190.0
-</td>
-
-<td>
-3650.0
-</td>
-
-<td>
-Male
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
+<section id="eda-and-preprocessing" class="slide level2">
+<h2>EDA and Preprocessing</h2>
+<p><span style="font-size: 32px;"><strong>Process to prepare features</strong></span></p>
+
+<img data-src="artifacts/EDA.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"></section>
+<section id="supervised-learning-xgboost" class="slide level2">
+<h2>Supervised Learning (XGBoost)</h2>
+<div class="columns">
+<div class="column" style="width:53%;">
+<p><span style="font-size: 28px;">- <strong>Recall weaker</strong> for anomalies: 0.63 =&gt; some attacks missed<br>
+- <strong>Conservative model</strong>: low false positives, higher false negatives<br>
+<strong>Training F1-score: ~99.81%</strong><br>
+<strong>Test F1-score: ~76%</strong><br>
+- <strong>Data Drift</strong> implications from new cyber attack methods<br>
+</span></p>
+<p><span style="font-size: 28px;"><strong>Attack Types:</strong><br>
+- Training contains 22<br>
+- Testing contains 17 original + 21 new attacks<br>
+</span></p>
+</div><div class="column" style="width:47%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="artifacts/confusion.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
 </div>
-</div>
+</div></div>
 </section>
-<section id="images" class="slide level2">
-<h2>Images</h2>
+<section id="unsupervised-learning-modeling" class="slide level2">
+<h2>Unsupervised Learning Modeling</h2>
+<p><span style="font-size: 24px;"><strong>Models</strong>: <strong>K-Means, DBSCAN, Gaussian Mixture (GMM)</strong><br>
+<strong>Goal</strong>: detect anomalies without labels<br>
+<strong>Evaluation Metrics</strong>: silhouette score + Adjusted Rand Index (ARI)</span></p>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><span style="font-size: 22px;"><strong>Silhouette Scores:</strong><br>
+- DBSCAN: 0.114<br>
+- KMeans: 0.414 (Best cluster cohesion)<br>
+- GMM: 0.307<br>
+<strong>Adjusted Rand Index:</strong><br>
+- DBSCAN: 0.242 (Best at matching true anomalies)<br>
+- KMeans: 0.179<br>
+- GMM: 0.143 (Moderate on both metrics)<br>
+</span></p>
+</div><div class="column" style="width:45%;">
+<p><span style="font-size: 22px;"><strong>Conclusion</strong><br>
+- Unsupervised models are less accurate than supervised methods<br>
+- Insights may help uncover new threats and support proactive network defense</span></p>
+</div></div>
+</section>
+<section id="comparing-top-features" class="slide level2">
+<h2>Comparing Top Features</h2>
 
-<img data-src="images/watercolour_sys02_img34_teacup-ocean.png" width="500" class="r-stretch quarto-figure-center"><p class="caption">Image credit: Danielle Navarro, Percolate.</p></section>
-<section id="math-expressions" class="slide level2 smaller">
-<h2>Math Expressions</h2>
-<p>You can write LaTeX math expressions inside a pair of dollar signs, e.g.&nbsp;$\alpha+\beta$ renders <span class="math inline">\(\alpha + \beta\)</span>. You can use the display style with double dollar signs:</p>
-<pre><code>$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$</code></pre>
-<p><span class="math display">\[
-\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i
-\]</span></p>
-<p>Limitations:</p>
-<ol type="1">
-<li><p>The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting <code>$$</code> must appear in the very beginning of a line, followed immediately by a non-space character, and the ending <code>$$</code> must be at the end of a line, led by a non-space character;</p></li>
-<li><p>There should not be spaces after the opening <code>$</code> or before the closing <code>$</code>.</p></li>
-</ol>
-</section></section>
-<section>
-<section id="wrap-up" class="title-slide slide level1 center">
-<h1>Wrap up</h1>
+<img data-src="artifacts/top_features_compare.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"><p><span style="font-size: 24px;"><strong>Methods:</strong><br>
+- Supervised (XGBoost): SHAP values explain feature importance<br>
+- Unsupervised (K-Means, GMM): analyzing variation of feature values across clusters centers<br>
+<strong>Takeaway:</strong><br>
+- consistent features <code>src_bytes</code> and <code>dst_bytes</code><br>
+- different influential service-level rates<br>
+- both are inluenced differently by varying service-level rates</span></p>
+</section>
+<section id="summary" class="slide level2">
+<h2>Summary</h2>
+<p><span style="font-size: 28px;"><strong>Supervised (XGBoost):</strong> high f1-score and some anomalies missed (False positives)<br>
+<strong>Unsupervised (K-Means, GMM):</strong> weaker overall, but reveal different service-level patterns<br>
+<br>
+<strong>Takeaways:</strong><br>
+- <strong>Feature overlap:</strong> traffic volume (<code>src_bytes</code>, <code>dst_bytes</code>) dominant across methods<br>
+- <strong>Data Drift:</strong> F1-score highlights train (f1=~99%) and test (f1=~76%) performance metrics. This is an area for continued research.<br>
+- <strong>Effective Practices:</strong> A well-rounded approach would be to use both unsupervised and supervised methods<br>
+- <strong>Continued Research:</strong> As attackers evolve, models must adapt. Ongoing monitoring and retraining are essential to address data drift and maintain strong network defenses.</span></p>
+
 
 </section>
-<section id="feeling-adventurous" class="slide level2">
-<h2>Feeling adventurous?</h2>
-<ul>
-<li><p>You are welcomed to use the default styling of the slides. In fact, that’s what I expect majority of you will do. You will differentiate yourself with the content of your presentation.</p></li>
-<li><p>But some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs.</p></li>
-</ul>
-
-
-</section></section>
-
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
