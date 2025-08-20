@@ -114,7 +114,7 @@ import seaborn as sns
 - KMeans: 0.414 (Best cluster cohesion)\
 - GMM: 0.307\
 **Adjusted Rand Index:**\
-- DBSCAN: 0.242 (Closest match to ground truth)\
+- DBSCAN: 0.242 (Best at matching true anomalies)\
 - KMeans: 0.179\
 - GMM: 0.143 (Moderate on both metrics)\
 ]{style="font-size: 22px;"}
@@ -123,9 +123,6 @@ import seaborn as sns
 ::: {.column width="45%"}
 [**Conclusion**\
 - Unsupervised models are less accurate than supervised methods\
-- **K-Means** excels at forming tight clusters\
-- DBSCAN is best at matching true anomalies\
-- GMM balances both\
 - Insights may help uncover new threats and support proactive network defense
 ]{style="font-size: 22px;"}
 :::
